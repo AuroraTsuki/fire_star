@@ -1,0 +1,104 @@
+<view class="detail-container">
+  <!-- Top Navigation Bar (Custom) -->
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px">
+    <view class="nav-content">
+      <view class="nav-btn bg-white shadow-sm" bindtap="goBack">
+        <view class="icon-base icon-chevron-left text-main"></view>
+      </view>
+      <view class="flex items-center gap-3">
+        <view class="nav-btn bg-white shadow-sm" bindtap="deleteRecipe">
+            <view class="icon-base icon-delete text-red"></view>
+        </view>
+        <view class="nav-btn bg-white shadow-sm">
+            <view class="icon-base icon-share text-main"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Hero Image -->
+  <view class="hero-section">
+    <image class="cover-image" src="{{recipe.coverImage}}" mode="aspectFill" />
+    <view class="hero-overlay"></view>
+  </view>
+
+  <!-- Content Card -->
+  <view class="content-card bg-bg-main dark-bg-dark">
+    <!-- Header Info -->
+    <view class="mb-8">
+      <text class="detail-title font-bold block">{{recipe.title}}</text>
+      <text class="detail-desc text-soft mt-2 block">{{recipe.description}}</text>
+      
+      <!-- Meta Grid -->
+      <view class="meta-grid mt-6">
+        <view class="meta-card bg-white shadow-sm border">
+          <view class="icon-base icon-schedule text-primary mr-3"></view>
+          <view>
+            <text class="text-xs text-soft block">烹饪时间</text>
+            <text class="font-bold block text-gradient-progress">{{recipe.time || '15 分钟'}}</text>
+          </view>
+        </view>
+        <view class="meta-card bg-white shadow-sm border">
+          <view class="icon-base icon-trending text-primary mr-3"></view>
+          <view>
+            <text class="text-xs text-soft block">难度等级</text>
+            <text class="font-bold block text-gradient-progress">{{recipe.difficulty || '初级'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Ingredients Section -->
+    <view class="section mb-10">
+      <view class="flex justify-between items-center mb-4">
+        <text class="section-title font-bold">食材清单</text>
+        <text class="text-sm text-primary font-medium">3 人份</text>
+      </view>
+      
+      <view class="ingredients-list mb-6">
+        <view wx:for="{{recipe.ingredients}}" wx:key="name" class="ingredient-row border-b">
+          <text class="text-main">{{item.name}}</text>
+          <text class="font-medium">{{item.amount}}</text>
+        </view>
+      </view>
+
+      <button class="add-cart-btn bg-secondary text-white shadow-md active-scale" bindtap="addToShopping">
+        <view class="icon-base icon-shopping-cart text-white mr-2" style="background-color: white;"></view>
+        <text class="font-bold">一键加入采购清单</text>
+      </button>
+    </view>
+
+    <!-- Steps Section -->
+    <view class="section">
+      <text class="section-title font-bold mb-6 block">烹饪步骤</text>
+      <view class="steps-timeline">
+        <view class="timeline-line"></view>
+        
+        <block wx:for="{{recipe.steps}}" wx:key="order">
+          <view class="step-item relative">
+            <view class="step-badge step-badge-gradient shadow-3d">{{item.order}}</view>
+            
+            <view wx:if="{{item.image}}" class="step-card bg-white shadow-sm mb-3 overflow-hidden rounded-xl">
+              <image class="step-image" src="{{item.image}}" mode="aspectFill" />
+            </view>
+            
+            <text class="step-title font-bold mb-1 block">{{item.title}}</text>
+            <text class="step-desc text-soft text-sm leading-relaxed block">{{item.description}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- Bottom Bar -->
+  <view class="bottom-bar bg-white shadow-up">
+    <view class="bottom-bar-inner">
+      <view class="fav-btn bg-bg-secondary border flex items-center justify-center rounded-xl mr-4" bindtap="toggleFavorite">
+        <view class="icon-base {{isFavorite ? 'icon-favorite-fill text-red' : 'icon-favorite'}}"></view>
+      </view>
+      <button class="save-btn bg-primary text-white shadow-lg active-scale flex-1 font-bold" bindtap="toggleFavorite">
+        保存到菜谱本
+      </button>
+    </view>
+  </view>
+</view>

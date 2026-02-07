@@ -1,0 +1,228 @@
+.header-nav {
+  height: 100rpx;
+  padding: 0 var(--space-lg);
+  z-index: 100;
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+}
+
+.image-upload-area {
+  height: 440rpx;
+  background-color: #f7f8fa;
+  border: 2rpx dashed #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-icon-bg {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.form-content {
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.form-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+}
+
+.title-input {
+  display: block;
+  width: 100%;
+  height: 80rpx;
+  font-size: 36rpx;
+  border-bottom: 2rpx solid #f3f4f6;
+  margin-top: 10rpx;
+}
+
+.add-ingredient-btn {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  height: 56rpx;
+  padding: 0 24rpx;
+  border-radius: 28rpx;
+}
+
+.bg-primary-faint {
+  background-color: rgba(238, 140, 43, 0.1);
+}
+
+.ing-edit-item {
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f9fafb;
+}
+
+.divider {
+  width: 1rpx;
+  height: 40rpx;
+  background-color: #f3f4f6;
+  margin: 0 24rpx;
+}
+
+.steps-cell {
+  background-color: #f7f8fa;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  margin-top: 20rpx;
+}
+
+.cell-icon {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 40;
+}
+
+.submit-container {
+  padding: 40rpx;
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+}
+
+.submit-btn {
+  height: 100rpx;
+  line-height: 100rpx;
+  background-color: var(--primary);
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+}
+
+/* Modal Shim */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  height: 90vh; /* Consistent with previous design but more polished */
+  background-color: #ffffff;
+  border-radius: 60rpx 60rpx 0 0;
+  position: relative;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.modal-header {
+  height: 140rpx;
+  padding: 0 50rpx;
+  border-bottom: 1rpx solid #f3f4f6;
+  background: white;
+}
+
+.modal-body {
+  flex: 1;
+  height: 0;
+  background-color: #ffffff;
+}
+
+.steps-container {
+  min-height: 100%;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 74rpx; /* Center of the badge */
+  top: 130rpx;
+  bottom: 150rpx;
+  width: 4rpx;
+  background-color: #f3f4f6;
+  z-index: 0;
+}
+
+.step-edit-item {
+  position: relative;
+  z-index: 1;
+}
+
+.step-num-badge {
+  width: 56rpx;
+  height: 56rpx;
+  font-size: 28rpx;
+  box-shadow: 0 4rpx 10rpx rgba(238, 140, 43, 0.3);
+}
+
+.step-main-card {
+  margin-left: 10rpx; /* Align within the timeline line area */
+}
+
+.step-image-box {
+  background-color: #fdfcfb;
+  min-height: 320rpx;
+  border: 4rpx dashed #edeceb;
+  border-radius: 24rpx;
+  position: relative;
+  width: 100%;
+}
+
+.step-desc-input {
+  width: 100%;
+  padding: 30rpx;
+  background-color: #f7f8fa;
+  border-radius: 20rpx;
+  min-height: 160rpx;
+  box-sizing: border-box;
+  color: #181411;
+  line-height: 1.6;
+}
+
+.add-step-btn-dashed {
+  margin-left: 10rpx;
+  border: 4rpx dashed #edeceb;
+  height: 240rpx;
+}
+
+.modal-footer {
+  box-shadow: 0 -10rpx 30rpx rgba(0, 0, 0, 0.03);
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.save-steps-btn {
+  height: 100rpx;
+  background: var(--primary);
+  color: white;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 20rpx rgba(238, 140, 43, 0.2);
+}

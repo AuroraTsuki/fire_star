@@ -1,0 +1,200 @@
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  /* background-color: rgba(248, 247, 246, 0.9); */
+  /* backdrop-filter: blur(20px); */
+  padding-top: env(safe-area-inset-top);
+  border-bottom: 1rpx solid transparent;
+  /* Use glass utils implicitly or explicitly */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.header-top {
+  height: 100rpx;
+  padding: 0 var(--space-lg);
+}
+
+.header-title {
+  font-size: 34rpx;
+  letter-spacing: 1.5rpx;
+}
+
+.search-container {
+  padding: 10rpx var(--space-lg) var(--space-md);
+}
+
+.search-bar {
+  height: 80rpx;
+  background-color: rgba(255, 255, 255, 0.5); /* glass-light */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 40rpx; /* Fully rounded for 80rpx height */
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+}
+
+.search-bar:active {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  padding: 0 var(--space-sm);
+}
+
+.categories-scroll {
+  white-space: nowrap;
+  padding: var(--space-sm) 0 var(--space-md);
+  height: 64rpx;
+}
+
+.category-tag {
+  display: inline-flex;
+  height: 64rpx;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32rpx; /* Match Tab Bar Item Squircle */
+  padding: 0 40rpx;
+  margin-right: 20rpx;
+  font-size: 26rpx;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: var(--text-soft);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.category-tag:first-child {
+  margin-left: var(--space-lg);
+}
+
+.category-tag.active {
+  background: linear-gradient(135deg, #FF9F7A 0%, #FF6B95 100%);
+  color: #ffffff;
+  font-weight: 700;
+  border: none;
+  transform: translateY(-2rpx) scale(1.05);
+  box-shadow: 0 8rpx 20rpx rgba(255, 107, 149, 0.3);
+}
+
+.masonry-grid {
+  column-count: 2;
+  column-gap: 24rpx;
+  padding-top: var(--space-sm);
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 24rpx;
+  border-radius: 32rpx;
+  overflow: hidden;
+  /* background-color: #ffffff; */
+  /* border: 1rpx solid rgba(237, 236, 235, 0.5); */
+  /* box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.03); */
+  
+  /* Glass Panel Style */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.05);
+}
+
+.recipe-cover-container {
+  position: relative;
+  width: 100%;
+  background-color: #f3f4f6;
+}
+
+.aspect-3-4 { aspect-ratio: 3 / 4; }
+.aspect-4-5 { aspect-ratio: 4 / 5; }
+.aspect-1-1 { aspect-ratio: 1 / 1; }
+
+.recipe-cover {
+  width: 100%;
+  height: 100%;
+  vertical-align: bottom;
+}
+
+.favorite-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10rpx);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recipe-info {
+  padding: 20rpx;
+}
+
+.recipe-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.4;
+  margin-bottom: 12rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.author-avatar {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  margin-right: 12rpx;
+}
+
+.author-name {
+  color: var(--text-soft);
+  max-width: 120rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.likes-count {
+  color: var(--text-soft);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.clear-btn {
+  margin-top: 40rpx;
+  background-color: rgba(238, 140, 43, 0.1);
+  color: var(--primary);
+  font-size: 26rpx;
+  font-weight: bold;
+  border-radius: 40rpx;
+  border: none;
+}
+
+/* Material Icons local shim if using font or simple view icons */
+.icon-placeholder {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,40 @@
+<view class="container bg-bg-main min-h-screen">
+  <!-- Header -->
+  <view class="p-6 bg-white flex items-center justify-between border-b">
+    <view class="active-scale p-2 ml--2" bindtap="goBack">
+      <view class="icon-base icon-chevron-left"></view>
+    </view>
+    <text class="text-lg font-bold">基本信息</text>
+    <view class="w-10"></view>
+  </view>
+
+  <view class="mt-4 bg-white">
+    <!-- Name Input -->
+    <view class="p-4 border-b flex items-center">
+      <text class="w-20 text-sm font-medium">姓名</text>
+      <input 
+        class="flex-1 text-sm text-right" 
+        placeholder="请输入您的姓名" 
+        value="{{tempName}}" 
+        bindinput="onNameInput"
+        focus
+      />
+    </view>
+
+    <!-- Placeholder for other settings -->
+    <!-- Modify Avatar Row -->
+    <button class="p-4 border-b flex items-center justify-between active-scale reset-btn w-full" hover-class="none" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <text class="text-sm font-medium">修改头像</text>
+      <view class="flex items-center">
+        <image class="avatar-preview rounded-full mr-2" src="{{tempAvatar}}" mode="aspectFill" />
+        <view class="icon-base icon-chevron-right icon-sm text-light"></view>
+      </view>
+    </button>
+  </view>
+
+  <view class="p-6 mt-10">
+    <button class="bg-primary text-white rounded-full font-bold shadow-lg active-scale" bindtap="handleSave">
+      保存修改
+    </button>
+  </view>
+</view>

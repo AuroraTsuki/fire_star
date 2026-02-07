@@ -1,0 +1,214 @@
+.detail-container {
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  background-color: var(--bg-main);
+  min-height: 100vh;
+}
+
+/* Custom Nav */
+.custom-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  /* backdrop-filter: blur(10px); */
+}
+
+.nav-content {
+  height: 44px; /* Standard nav height */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+}
+
+.nav-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: bold;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 800rpx; /* Increased height as per design */
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 50%);
+}
+
+/* Content Card */
+.content-card {
+  position: relative;
+  margin-top: -64rpx;
+  border-radius: 64rpx 64rpx 0 0;
+  padding: 64rpx 48rpx 160rpx; /* Extra padding bottom */
+  background-color: var(--bg-main);
+  z-index: 10;
+}
+
+/* Typography */
+.detail-title {
+  font-size: 60rpx; /* text-3xl approx */
+  line-height: 1.2;
+  color: var(--text-main);
+}
+
+.detail-desc {
+  font-size: 28rpx;
+  color: var(--text-soft);
+}
+
+/* Meta Grid */
+.meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32rpx;
+}
+
+.meta-card {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(0,0,0,0.05);
+}
+
+/* Ingredients */
+.section-title {
+  font-size: 40rpx; /* text-xl -> 20px -> 40rpx */
+  color: var(--text-main);
+  margin-bottom: 30rpx;
+}
+
+.ingredient-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #e6e0db;
+}
+
+.ingredient-row:last-child {
+  border-bottom: none;
+}
+
+.add-cart-btn {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: #2d9d78 !important; /* Force Green */
+  color: #ffffff !important;
+}
+
+/* Steps Timeline */
+.steps-timeline {
+  position: relative;
+  padding-left: 80rpx; /* Increased from 64rpx to prevent clipping */
+}
+
+.timeline-line {
+  position: absolute;
+  top: 16rpx;
+  left: 28rpx; /* Center of the 56rpx badge usually, refined adjustment */
+  width: 4rpx;
+  height: calc(100% - 40rpx);
+  background-color: rgba(238, 140, 43, 0.2); /* primary/20 */
+}
+
+.step-item {
+  margin-bottom: 60rpx;
+  position: relative;
+}
+
+.step-badge {
+  position: absolute;
+  left: -80rpx;
+  top: 0;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx; /* Circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: bold;
+  z-index: 2;
+}
+
+.step-card {
+  width: 100%;
+  height: 384rpx; /* h-48 -> 12rem -> 192px -> 384rpx */
+  border-radius: 24rpx;
+}
+
+.step-image {
+  width: 100%;
+  height: 100%;
+}
+
+.step-title {
+  font-size: 32rpx;
+  color: var(--text-main);
+}
+
+/* Bottom Bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 32rpx 48rpx calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 100;
+  box-shadow: 0 -10rpx 40rpx rgba(0,0,0,0.05);
+}
+
+.bottom-bar-inner {
+  display: flex;
+  max-width: 600rpx; /* max-w-md approx */
+  margin: 0 auto;
+}
+
+.fav-btn {
+  width: 96rpx; /* size-12 -> 3rem -> 48px -> 96rpx */
+  height: 96rpx;
+}
+
+.save-btn {
+  height: 96rpx; /* Match fav icon height */
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin: 0;
+}

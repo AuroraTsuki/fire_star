@@ -1,0 +1,42 @@
+<view class="container pb-24" wx:if="{{showPage}}">
+  <!-- Profile Header -->
+  <view class="profile-header flex items-center">
+    <view class="avatar-border shadow-sm animate-enter animate-zoom-in" bindtap="goToSettings">
+      <image class="user-avatar" src="{{userInfo.avatar}}" />
+    </view>
+    <view class="ml-4 flex-1 animate-enter animate-slide-right" style="animation-delay: 0.1s">
+      <text class="text-xl font-bold block text-gradient-primary">{{userInfo.name}}</text>
+      <text class="text-xs text-light mt-1 block">ID: 29547820</text>
+    </view>
+    <view class="icon-placeholder active-scale" bindtap="goToSettings">
+      <view class="icon-base icon-settings text-light"></view>
+    </view>
+  </view>
+
+  <!-- Tabs -->
+  <view class="tabs-section">
+    <view class="tabs-header flex items-center">
+      <view class="tab-item active transition-all">
+        <text>收藏喜欢</text>
+        <view class="tab-indicator transition-all"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Content -->
+  <view class="flex-1">
+    <view wx:if="{{favorites.length > 0}}" class="works-grid">
+      <block wx:for="{{favorites}}" wx:key="id">
+        <view class="work-item shadow-sm hover-scale-sm hover-shadow-lg animate-enter animate-fade-in animate-slide-down" style="animation-delay: {{index * 0.05 + 0.2}}s" bindtap="goToDetail" data-id="{{item.id}}">
+          <image class="work-cover" src="{{item.coverImage}}" mode="aspectFill" lazy-load />
+          <view class="work-title font-medium truncate">{{item.title}}</view>
+        </view>
+      </block>
+    </view>
+    <view wx:else class="empty-works flex flex-col items-center justify-center py-20">
+      <view class="icon-base icon-favorite icon-xl text-gray-200 mb-4" style="opacity: 0.3;"></view>
+      <text class="empty-text text-sm text-gray-300">暂无收藏内容</text>
+      <button class="create-now-btn mt-6" bindtap="goToMarket">去广场看看</button>
+    </view>
+  </view>
+</view>

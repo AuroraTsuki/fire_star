@@ -1,0 +1,154 @@
+<view class="container bg-white min-h-screen">
+  <view class="header-nav sticky-top flex items-center bg-white border-b">
+
+    <text class="nav-title font-bold flex-1 text-center text-lg">手动创建菜谱</text>
+  </view>
+
+  <view class="p-4">
+    <view class="image-upload-area rounded-2xl active-opacity flex flex-col items-center justify-center gap-2" bindtap="chooseCover">
+      <image wx:if="{{coverImage}}" src="{{coverImage}}" class="w-full h-full" mode="aspectFill" />
+      <block wx:else>
+        <view class="photo-icon-bg">
+          <view class="icon-base icon-photo text-light"></view>
+        </view>
+        <text class="text-xs text-light font-bold mt-2">添加菜谱封面图</text>
+      </block>
+    </view>
+  </view>
+
+  <view class="form-content">
+    <!-- ... form items ... -->
+    <view class="form-item mb-8">
+      <text class="form-label">菜谱名称</text>
+      <input 
+        class="title-input font-bold" 
+        placeholder="起个亮眼的标题吧..." 
+        placeholder-style="font-weight: normal; color: #ccc;"
+        value="{{title}}"
+        bindinput="onTitleInput"
+      />
+    </view>
+
+    <view class="form-item mb-8">
+      <view class="flex items-center justify-between">
+        <text class="form-label">用料清单</text>
+        <view class="add-ingredient-btn flex items-center active-scale" bindtap="addIngredient">
+          <view class="icon-base icon-add icon-xs mr-1"></view>
+          <text class="text-xs font-bold">添加食材</text>
+        </view>
+      </view>
+      
+      <view class="ingredients-edit-list mt-2">
+        <block wx:for="{{ingredients}}" wx:key="index">
+          <view class="ing-edit-item flex items-center">
+            <input class="flex-1 text-base" placeholder="食材名称" value="{{item.name}}" bindinput="onIngNameInput" data-index="{{index}}" />
+            <view class="divider"></view>
+            <input class="w-20 text-right text-secondary text-sm" placeholder="用量" value="{{item.amount}}" bindinput="onIngAmountInput" data-index="{{index}}" />
+            <view class="delete-ing ml-4 active-opacity" bindtap="removeIngredient" data-index="{{index}}">
+              <view class="icon-base icon-delete text-light"></view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">更多详情</text>
+      <view class="steps-cell active-scale flex items-center justify-between" bindtap="toggleStepsModal">
+        <view class="flex items-center">
+          <view class="cell-icon bg-white shadow-sm flex items-center justify-center rounded-xl">
+            <view class="icon-base icon-restaurant text-primary"></view>
+          </view>
+          <view class="ml-3">
+            <text class="text-sm font-bold block">编写烹饪步骤</text>
+            <text class="text-xs text-light mt-1 block">{{steps.length > 0 ? '已添加 ' + steps.length + ' 个步骤' : '分享你的独门秘籍'}}</text>
+          </view>
+        </view>
+        <view class="icon-base icon-chevron-right text-light icon-sm"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-container">
+    <button class="submit-btn active-scale flex items-center justify-center bg-gradient-primary shadow-lg border-none" bindtap="handleSave">
+      <text class="text-white font-bold text-lg">发布菜谱</text>
+    </button>
+  </view>
+
+  <!-- Steps Modal -->
+  <view wx:if="{{isStepsModalOpen}}" class="modal-overlay z-50">
+    <view class="modal-mask bg-black-50 backdrop-blur-sm" bindtap="toggleStepsModal"></view>
+    <view class="modal-content flex flex-col modal-enter-active">
+      <!-- Sticky Header -->
+      <view class="modal-header flex items-center justify-between shrink-0">
+        <text class="text-lg font-bold">编写步骤</text>
+        <view class="close-modal-btn active-scale flex items-center justify-center rounded-full bg-bg-secondary size-10" bindtap="toggleStepsModal">
+          <view class="icon-base icon-close icon-sm text-light"></view>
+        </view>
+      </view>
+      
+      <!-- Scrollable Content -->
+      <scroll-view scroll-y class="flex-1 modal-body">
+        <view class="steps-container p-10 pb-20 relative">
+          <!-- Timeline Line -->
+          <view class="timeline-line"></view>
+
+          <block wx:for="{{steps}}" wx:key="order">
+            <view class="step-edit-item mb-12">
+              <view class="step-header flex items-center justify-between mb-4">
+                <view class="flex items-center">
+                  <view class="step-num-badge bg-primary text-white flex items-center justify-center rounded-full font-bold">
+                    {{index + 1}}
+                  </view>
+                  <text class="ml-4 text-lg font-bold">步骤 {{index + 1}}</text>
+                </view>
+                <view class="p-2 active-opacity" bindtap="removeStep" data-index="{{index}}">
+                  <view class="icon-base icon-delete text-light icon-sm"></view>
+                </view>
+              </view>
+
+              <view class="step-main-card bg-white rounded-2xl overflow-hidden shadow-sm">
+                <!-- Step Image -->
+                <view class="step-image-box border-dashed flex flex-col items-center justify-center mb-0 active-opacity" bindtap="chooseStepImage" data-index="{{index}}">
+                  <image wx:if="{{item.image}}" src="{{item.image}}" class="w-full" mode="widthFix" />
+                  <block wx:else>
+                    <view class="photo-icon-bg bg-white shadow-sm flex items-center justify-center rounded-xl scale-75">
+                      <view class="icon-base icon-photo-plus text-primary"></view>
+                    </view>
+                    <text class="text-xs text-light font-bold mt-2">添加步骤图</text>
+                  </block>
+                </view>
+
+                <!-- Step Description -->
+                <view class="p-4 bg-bg-main">
+                  <textarea 
+                    class="step-desc-input text-sm" 
+                    placeholder="详细描述一下这个步骤的操作细节吧..." 
+                    placeholder-style="color: #a69282;"
+                    value="{{item.description}}" 
+                    bindinput="onStepDescInput" 
+                    data-index="{{index}}"
+                    auto-height
+                    maxlength="500"
+                  />
+                </view>
+              </view>
+            </view>
+          </block>
+          
+          <view class="add-step-btn-dashed border-dashed rounded-2xl flex flex-col items-center justify-center p-8 bg-white active-scale" bindtap="addStep">
+            <view class="photo-icon-bg bg-bg-main flex items-center justify-center rounded-xl mb-2">
+              <view class="icon-base icon-add text-soft"></view>
+            </view>
+            <text class="text-sm font-bold text-soft">添加下一步骤</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- Fixed Footer -->
+      <view class="modal-footer p-6 shrink-0 bg-white border-t">
+        <button class="save-steps-btn active-scale" bindtap="toggleStepsModal">保存所有步骤</button>
+      </view>
+    </view>
+  </view>
+</view>

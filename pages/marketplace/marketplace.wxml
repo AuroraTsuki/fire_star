@@ -1,0 +1,66 @@
+<view class="flex flex-col container pb-24 bg-gradient-multi" wx:if="{{showPage}}">
+  <!-- Sticky Header -->
+  <view class="sticky-header">
+
+
+    <!-- Search Bar -->
+    <view class="search-container">
+      <view class="search-bar flex items-center px-3 border shadow-sm">
+        <view class="icon-base icon-search text-soft icon-sm"></view>
+        <input 
+          class="search-input font-chinese" 
+          placeholder="搜索美味菜谱" 
+          value="{{searchQuery}}" 
+          bindinput="onSearchInput"
+        />
+        <view wx:if="{{searchQuery}}" class="icon-base icon-close icon-xs text-light active-opacity" bindtap="clearSearch"></view>
+      </view>
+    </view>
+
+    <!-- Categories -->
+    <scroll-view scroll-x class="categories-scroll no-scrollbar" enable-flex>
+      <block wx:for="{{categories}}" wx:key="*this">
+        <view 
+          class="category-tag transition-all active-opacity tag-glass {{selectedCategory === item ? 'active' : ''}}" 
+          bindtap="selectCategory" 
+          data-cat="{{item}}"
+        >
+          {{item}}
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- Masonry Grid -->
+  <view class="px-4">
+    <view wx:if="{{filteredRecipes.length > 0}}" class="masonry-grid">
+      <block wx:for="{{filteredRecipes}}" wx:key="_id">
+        <view class="masonry-item hover-scale-sm hover-shadow-lg animate-enter animate-fade-in animate-slide-down" style="animation-delay: {{index * 0.1}}s" bindtap="goToDetail" data-id="{{item._id}}">
+          <view class="recipe-cover-container {{index % 3 === 0 ? 'aspect-3-4' : (index % 3 === 1 ? 'aspect-4-5' : 'aspect-1-1')}}">
+            <image class="recipe-cover" src="{{item.coverImage}}" mode="aspectFill" lazy-load />
+            <view class="absolute inset-0 bg-gradient-to-b h-16 pointer-events-none"></view>
+            <view class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t pointer-events-none"></view>
+            <view class="favorite-badge hover-scale-md" catchtap="toggleFavorite" data-id="{{item._id}}">
+              <view class="icon-base icon-favorite text-white icon-xs {{item.isLiked ? 'icon-favorite-active' : ''}}"></view>
+            </view>
+          </view>
+          <view class="recipe-info">
+            <text class="recipe-title font-chinese">{{item.title}}</text>
+            <view class="recipe-footer flex justify-between items-center mt-2.5">
+              <view class="author flex items-center gap-1.5 overflow-hidden">
+                <image class="author-avatar shrink-0" src="{{item.author.avatar}}" />
+                <text class="author-name text-xs font-chinese">{{item.author.name}}</text>
+              </view>
+              <text class="likes-count text-xs font-chinese">{{item.likes}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view wx:else class="empty-state">
+      <view class="icon-base icon-search icon-xl mb-4" style="opacity: 0.2;"></view>
+      <text class="empty-text">未找到匹配的菜谱</text>
+      <button class="clear-btn" bindtap="resetFilters">清除所有筛选</button>
+    </view>
+  </view>
+</view>

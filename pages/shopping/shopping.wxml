@@ -1,0 +1,152 @@
+<view class="container flex flex-col bg-bg-main min-h-screen pb-40" wx:if="{{showPage}}">
+  <!-- Header -->
+  <view class="sticky-header bg-white">
+    <view class="header-top flex items-center justify-between p-4 px-6">
+      <view class="flex size-10 items-center justify-start active-scale" bindtap="goBack">
+        <view class="icon-base icon-chevron-left text-lg"></view>
+      </view>
+      <text class="text-lg font-bold font-chinese">采购清单</text>
+      <view class="flex size-10 items-center justify-end active-scale">
+        <view class="icon-base icon-menu-dots text-lg"></view>
+      </view>
+    </view>
+
+    <!-- Tabs -->
+    <view class="tabs-header flex items-center px-6 border-b">
+      <view class="tab-item {{activeTab === 'pending' ? 'active' : ''}} mr-8" bindtap="switchTab" data-tab="pending">
+        <text class="text-sm font-bold">待购清单</text>
+        <view wx:if="{{activeTab === 'pending'}}" class="tab-indicator bg-success"></view>
+      </view>
+      <view class="tab-item {{activeTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+        <text class="text-sm font-bold">已购记录</text>
+        <view wx:if="{{activeTab === 'completed'}}" class="tab-indicator bg-success"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Grouped Lists -->
+  <view class="px-6 py-4">
+    <block wx:for="{{groupedList}}" wx:key="title">
+      <view class="card-group bg-white rounded-2xl mb-4 shadow-sm overflow-hidden animate-enter animate-fade-in animate-slide-down hover-shadow-lg" style="animation-delay: {{index * 0.1}}s">
+        <!-- Group Header -->
+        <view class="group-header flex items-center p-4" bindtap="{{isDeleteMode ? 'handleGroupTap' : ''}}" data-title="{{item.title}}">
+          <!-- Normal Mode Icon / Delete Mode Checkbox -->
+          <view wx:if="{{!isDeleteMode}}" class="group-icon-bg bg-success-light flex justify-center items-center rounded-xl mr-3">
+             <!-- Always use cart icon as requested -->
+            <view class="icon-base icon-shopping-cart text-success icon-sm"></view>
+          </view>
+          
+          <!-- Delete Mode Group Checkbox -->
+          <view wx:else class="checkbox mr-3 transition-colors {{utils.isGroupSelected(selectedIds, item.items) ? 'bg-red border-red' : ''}}">
+              <view wx:if="{{utils.isGroupSelected(selectedIds, item.items)}}" class="icon-base icon-close text-white icon-xs"></view>
+          </view>
+
+          <text class="text-base font-bold flex-1">{{item.title}}</text>
+          <text wx:if="{{item.title !== '其他零散采购'}}" class="source-tag text-xs text-light bg-bg-main px-2 py-0.5 rounded-lg">来自菜谱</text>
+        </view>
+
+        <!-- Group Items -->
+        <view class="group-items">
+          <block wx:for="{{item.items}}" wx:key="_id" wx:for-item="subItem">
+            <!-- Use wxs or simple check for selection class -->
+             <!-- Note: We can't use includes easily in wxml without wxs, but we can pass a prop or just rely on JS updates if simple. 
+                  Actually, let's use a simpler approach: relies on JS 'selectedIds' check? No, WXML needs to know.
+                  We can add a 'selected' prop to the view model in updateGroupedList? 
+                  OR, since we just have list of IDs, we might need a WXS module OR update the 'groupedList' to include 'isSelected' state.
+                  Let's update updateGroupedList in JS to add 'isSelected' property temporarily?
+                  Wait, 'selectedIds' is in data.
+                  Let's use a simple wxs module inline for includes check. -->
+            <wxs module="utils">
+                module.exports.includes = function(arr, id) {
+                    return arr.indexOf(id) > -1;
+                }
+                module.exports.isGroupSelected = function(selectedIds, items) {
+                    if (!items || items.length === 0) return false;
+                    for (var i = 0; i < items.length; i++) {
+                        if (selectedIds.indexOf(items[i]._id) === -1) return false;
+                    }
+                    return true;
+                }
+            </wxs>
+            
+            <view class="shopping-item flex items-center p-4 py-3 hover-bg-glass transition-all {{isDeleteMode && utils.includes(selectedIds, subItem._id) ? 'bg-red-50' : ''}}" bindtap="handleItemTap" data-id="{{subItem._id}}">
+              
+              <!-- Checkbox (Normal Mode) -->
+              <view wx:if="{{!isDeleteMode}}" class="checkbox {{subItem.completed ? 'checked' : ''}} mr-4 transition-colors">
+                <view wx:if="{{subItem.completed}}" class="icon-base icon-check text-white icon-xs"></view>
+              </view>
+
+              <!-- Selection Radio (Delete Mode) -->
+              <!-- Filled Style: bg-red border-red when selected -->
+              <view wx:else class="checkbox mr-4 transition-colors {{utils.includes(selectedIds, subItem._id) ? 'bg-red border-red' : ''}}">
+                 <!-- Use check icon or close icon? User Image implies filled square. Close icon implies deletion. -->
+                 <!-- Let's use check or just fill? User text "将商品前面的选中框填满". -->
+                 <!-- I'll use a checkmark for Selected, or maybe just fill. -->
+                 <!-- Given context is 'Delete', maybe a checkmark to say logic 'Selected'? -->
+                 <!-- Or 'Close' to say 'Delete this'? -->
+                 <!-- The user said "fill", implying a solid block. -->
+                 <!-- Let's use the same style as 'checked' but red (bg-red) and maybe a white Check or Close. -->
+                 <!-- Standard batch delete often uses Check for selection. -->
+                 <view wx:if="{{utils.includes(selectedIds, subItem._id)}}" class="icon-base icon-check text-white icon-xs"></view>
+              </view>
+
+              <text class="item-name text-base flex-1 {{subItem.completed ? 'text-light line-through' : ''}}">{{subItem.name}}</text>
+              <text class="item-amount text-sm text-light mr-3">{{subItem.amount}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <!-- Manual Add Button -->
+    <view class="manual-add flex items-center justify-center active-scale mb-4" bindtap="showAddModal">
+      <view class="group-icon-bg bg-bg-main flex justify-center items-center rounded-full mr-3" style="width: 56rpx; height: 56rpx; border: 2rpx solid #edeceb;">
+        <view class="icon-base icon-add text-soft icon-xs"></view>
+      </view>
+      <text class="text-base font-bold text-soft">手动添加商品</text>
+    </view>
+
+    <!-- Batch Delete Button -->
+    <view class="manual-add flex items-center justify-center active-scale" bindtap="{{isDeleteMode && selectedIds.length > 0 ? 'confirmBatchDelete' : 'toggleDeleteMode'}}">
+      <view class="group-icon-bg bg-bg-main flex justify-center items-center rounded-full mr-3" style="width: 56rpx; height: 56rpx; border: 2rpx solid #edeceb; {{isDeleteMode ? 'background-color: #fee2e2; border-color: #fca5a5;' : ''}}">
+        <view class="icon-base icon-delete {{isDeleteMode ? 'text-red' : 'text-soft'}} icon-xs"></view>
+      </view>
+      <text class="text-base font-bold {{isDeleteMode ? 'text-red' : 'text-soft'}}">{{isDeleteMode ? (selectedIds.length > 0 ? '确认删除 (' + selectedIds.length + ')' : '取消删除') : '批量管理商品'}}</text>
+    </view>
+  </view>
+
+  <!-- Bottom Action Bar (Unchanged) -->
+  <view class="bottom-bar-float flex items-center px-6">
+    <view class="clear-btn flex items-center justify-center bg-bg-secondary rounded-xl px-6 h-12 active-scale mr-4" bindtap="clearCompleted">
+      <view class="icon-base icon-delete text-soft icon-xs mr-2"></view>
+      <text class="text-sm font-medium text-soft">清除已购</text>
+    </view>
+    <view class="share-btn flex-1 flex items-center justify-center bg-gradient-primary text-white rounded-xl h-12 active-scale shadow-lg" bindtap="shareList">
+      <view class="icon-base icon-share text-white icon-sm mr-2"></view>
+      <text class="text-sm font-bold">分享清单给好友</text>
+    </view>
+  </view>
+
+  <!-- Add Item Modal -->
+  <view class="modal-root z-50 {{showModal ? 'show' : ''}}" catchtouchmove="true">
+    <view class="modal-mask bg-black-50 backdrop-blur-sm" bindtap="hideAddModal"></view>
+    <view class="modal-content modal-enter-active">
+      <text class="text-xl font-bold mb-6 block text-center">添加新商品</text>
+      
+      <view class="input-group mb-5">
+        <text class="input-label">商品名称</text>
+        <input class="modal-input" placeholder="请输入商品名称" value="{{newItemName}}" bindinput="onNameInput" focus="{{showModal}}" />
+      </view>
+      
+      <view class="input-group mb-8">
+        <text class="input-label">数量 / 规格 (可选)</text>
+        <input class="modal-input" placeholder="例如: 2瓶, 500g" value="{{newItemAmount}}" bindinput="onAmountInput" />
+      </view>
+      
+      <view class="modal-footer">
+        <view class="btn-base btn-cancel active-opacity" bindtap="hideAddModal">取消</view>
+        <view class="btn-base btn-confirm active-scale" bindtap="addItem">确认添加</view>
+      </view>
+    </view>
+  </view>
+</view>

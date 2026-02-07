@@ -1,0 +1,51 @@
+{
+    "pages": [
+        "pages/marketplace/marketplace",
+        "pages/shopping/shopping",
+        "pages/profile/profile",
+        "pages/recipeDetail/recipeDetail",
+        "pages/create/create",
+        "pages/settings/settings"
+    ],
+    "window": {
+        "backgroundColor": "#f8f7f6",
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#f8f7f6",
+        "navigationBarTitleText": "菜谱广场",
+        "navigationBarTextStyle": "black"
+    },
+    "tabBar": {
+        "custom": true,
+        "color": "#9ca3af",
+        "selectedColor": "#ee8c2b",
+        "backgroundColor": "#ffffff",
+        "borderStyle": "white",
+        "list": [
+            {
+                "pagePath": "pages/marketplace/marketplace",
+                "text": "广场",
+                "iconPath": "assets/icons/grid_view.png",
+                "selectedIconPath": "assets/icons/grid_view_fill.png"
+            },
+            {
+                "pagePath": "pages/shopping/shopping",
+                "text": "清单",
+                "iconPath": "assets/icons/edit_note.png",
+                "selectedIconPath": "assets/icons/edit_note_fill.png"
+            },
+            {
+                "pagePath": "pages/create/create",
+                "text": "创作",
+                "iconPath": "assets/icons/add_circle.png",
+                "selectedIconPath": "assets/icons/add_circle_fill.png"
+            },
+            {
+                "pagePath": "pages/profile/profile",
+                "text": "我的",
+                "iconPath": "assets/icons/person.png",
+                "selectedIconPath": "assets/icons/person_fill.png"
+            }
+        ]
+    },
+    "sitemapLocation": "sitemap.json"
+}

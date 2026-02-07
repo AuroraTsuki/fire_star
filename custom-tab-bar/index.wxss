@@ -1,0 +1,113 @@
+/* Custom Tab Bar - Glassmorphism Floating Design */
+
+/* Container to position the floating bar */
+.tab-bar-container {
+  position: fixed;
+  bottom: calc(30rpx + env(safe-area-inset-bottom));
+  left: 30rpx;
+  right: 30rpx;
+  z-index: 9999;
+}
+
+/* The actual bar (Floating Island) */
+.tab-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 128rpx; /* Taller for the island look */
+  background: rgba(255, 255, 255, 0.7); /* bg-white/70 */
+  backdrop-filter: blur(24px); /* backdrop-blur-xl */
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 64rpx; /* Super rounded */
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.5); /* border-white/50 */
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+/* Individual Item */
+.tab-bar-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 120rpx;
+  height: 100rpx; /* Fixed height for touch target */
+  border-radius: 32rpx; /* Inner radius for active state */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #999999; /* Inactive color */
+}
+
+/* Active State */
+.tab-bar-item.active {
+  width: 140rpx; /* Expand slightly */
+  height: 100rpx; /* Match height */
+  background: linear-gradient(135deg, #FF9F7A 0%, #FF6B95 100%); /* Orange-Pink Gradient */
+  color: #ffffff;
+  transform: translateY(-4rpx) scale(1.05); /* Levitate & Zoom */
+  box-shadow: 0 8rpx 20rpx rgba(255, 107, 149, 0.3);
+}
+
+/* Icon */
+.tab-icon-wrapper {
+  margin-bottom: 4rpx;
+}
+
+.icon-base {
+  width: 48rpx;  /* Slightly smaller icons inside the pill? or keep 56? Let's try 48 for balance */
+  height: 48rpx;
+  /* Icon inherits color from parent via currentColor technically, but we use mask/bg image usually */
+  /* If icons are font icons: color: inherit works. */
+  /* If icons are images/divs with bg-image, we need to handle color change manually or via mask */
+}
+
+/* Since our icons seem to be divs with bg-images or classes like 'icon-grid-view' 
+   which likely set a background-image. 
+   To colorize them white on active, we might need a specific utility or filter.
+   However, the previous code used `text-primary` or `text-soft`.
+   Let's assume our icon system supports `color` property or we need filters.
+   
+   If they are just background images, we can't easily recolor them without mask-image.
+   Let's try to assume they are using a class that sets color or mask.
+   
+   If `icon-base` sets a background-image, then `color: white` won't affect it. 
+   We might need `filter: brightness(0) invert(1)` for white icons if they are black by default.
+*/
+
+.tab-bar-item.active .icon-base {
+  /* Attempt to make icon white if it's an image/mask based icon taking font color */
+  /* If it relies on css color (e.g. mask-image + bg-color), then inheriting color is enough. */
+  /* If it relies on `background-image`, we need to swap the image or use filter. */
+  /* The previous code swapped `iconClass + '-fill'` vs `iconClass`. */
+  /* And also set `text-primary`. */
+  /* So likely the icon styling uses `background-color` (mask) or `color` (font). */
+  /* Let's verify how `icon-base` works from previous knowledge or assume generic behavior. */
+  
+  /* If previous was: `.icon-base.text-primary` -> color: #ee8c2b. */
+  /* Then here `.tab-bar-item.active` sets `color: white`. */
+  /* So if icon uses `currentColor`, it will be white. Perfect. */
+}
+
+/* Active State Styles */
+.tab-item.selected .tab-text {
+  color: #ffffff; /* White text for contrast */
+  font-weight: 700;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.tab-item.selected .tab-icon {
+  color: #ffffff;
+  transform: scale(1.1); /* Scale up selected icon */
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+/* Text */
+.tab-text {
+  font-size: 20rpx;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.tab-bar-item.active .tab-text {
+  font-weight: 700;
+}
