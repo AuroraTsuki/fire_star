@@ -143,13 +143,13 @@ export default function ShoppingList() {
             </div>
 
             {/* Floating Action Bar */}
-            <div className="fixed bottom-24 left-6 right-6 flex gap-4">
-                <button onClick={clearCompleted} className="flex items-center justify-center bg-bg-secondary text-text-soft px-6 h-12 rounded-xl font-medium shadow-sm flex-1">
-                    <Trash2 size={16} className="mr-2" />
+            <div className="fixed bottom-24 left-4 right-4 flex gap-3">
+                <button onClick={clearCompleted} className="flex items-center justify-center bg-bg-secondary text-text-soft px-3 h-12 rounded-xl font-medium shadow-sm w-auto whitespace-nowrap">
+                    <Trash2 size={16} className="mr-1" />
                     清除已备
                 </button>
-                <button className="flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white px-6 h-12 rounded-xl font-bold shadow-lg flex-[2]">
-                    <Share2 size={18} className="mr-2" />
+                <button className="flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white px-3 h-12 rounded-xl font-bold shadow-lg flex-1 whitespace-nowrap">
+                    <Share2 size={18} className="mr-1" />
                     分享清单
                 </button>
             </div>
