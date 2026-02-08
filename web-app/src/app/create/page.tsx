@@ -15,13 +15,49 @@ export default function CreateRecipe() {
     const [ingredients, setIngredients] = useState([{ name: "", amount: "" }]);
     const [steps, setSteps] = useState([{ title: "", description: "" }]);
 
+    const [image, setImage] = useState("");
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0) {
+                return;
+            }
+            setUploading(true);
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const filePath = `${Math.random()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('recipes')
+                .upload(filePath, file);
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            const { data } = supabase.storage.from('recipes').getPublicUrl(filePath);
+            setImage(data.publicUrl);
+        } catch (error: any) {
+            let msg = error.message;
+            if (msg.includes("The resource was not found")) {
+                msg = "存储桶 'recipes' 不存在，请在 Supabase 后台创建并设为 Public。";
+            }
+            alert(`上传失败: ${msg}`);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleCreate = async () => {
-        if (!title) return;
+        if (!title) {
+            alert("请输入菜谱名称");
+            return;
+        }
         setLoading(true);
 
         const user = (await supabase.auth.getUser()).data.user;
         if (!user) {
-            // Handle auth check
             alert("请先登录");
             setLoading(false);
             return;
@@ -31,22 +67,35 @@ export default function CreateRecipe() {
         const { data: recipe, error } = await supabase.from("recipes").insert({
             title,
             user_id: user.id,
-            // Default values
+            image_url: image,
             difficulty: "Easy",
             time: "15m"
         }).select().single();
 
         if (error || !recipe) {
-            alert("创建失败");
+            console.error(error);
+            alert("创建失败: " + error.message);
             setLoading(false);
             return;
         }
 
-        // 2. Add Ingredients
-        // 3. Add Steps
-        // Skipped for brevity in this single file demo, would iterate and insert.
+        // 2. Add Ingredients (Mock implementation for now)
+        if (ingredients.length > 0 && ingredients[0].name) {
+            const { error: ingError } = await supabase.from("ingredients").insert(
+                ingredients.map(ing => ({
+                    recipe_id: recipe.id,
+                    name: ing.name,
+                    amount: ing.amount,
+                }))
+            );
+            if (ingError) console.error("Error adding ingredients:", ingError);
+        }
+
+        // 3. Add Steps (Mock implementation for now)
+        // ...
 
         setLoading(false);
+        alert("菜谱发布成功！");
         router.push("/");
     };
 
@@ -58,10 +107,23 @@ export default function CreateRecipe() {
             </div>
 
             <div className="p-4 space-y-6">
-                {/* Cover Image Upload (Mock layout) */}
-                <div className="aspect-video bg-bg-secondary rounded-2xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light">
-                    <ImageIcon size={48} className="mb-2 opacity-50" />
-                    <span className="text-sm font-medium">点击上传封面图</span>
+                {/* Cover Image Upload */}
+                <div className="relative aspect-video bg-bg-secondary rounded-2xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light overflow-hidden">
+                    {image ? (
+                        <img src={image} alt="Cover" className="w-full h-full object-cover" />
+                    ) : (
+                        <>
+                            <ImageIcon size={48} className="mb-2 opacity-50" />
+                            <span className="text-sm font-medium">{uploading ? "上传中..." : "点击上传封面图"}</span>
+                        </>
+                    )}
+                    <input
+                        type="file"
+                        accept="image/*"
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                    />
                 </div>
 
                 {/* Title */}
