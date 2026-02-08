@@ -74,7 +74,7 @@ export default function CreateRecipe() {
 
         if (error || !recipe) {
             console.error(error);
-            alert("创建失败: " + error.message);
+            alert("创建失败: " + (error?.message || "未知错误"));
             setLoading(false);
             return;
         }
