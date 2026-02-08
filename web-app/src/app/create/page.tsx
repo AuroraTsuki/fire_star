@@ -51,7 +51,7 @@ export default function CreateRecipe() {
     };
 
     return (
-        <div className="min-h-screen bg-bg-main pb-24">
+        <div className="min-h-screen bg-bg-main pb-40">
             <div className="bg-white p-4 flex items-center sticky top-0 z-30 shadow-sm">
                 <Link href="/" className="p-2 -ml-2"><ChevronLeft /></Link>
                 <h1 className="text-lg font-bold flex-1 text-center pr-8">创建新菜谱</h1>
@@ -76,19 +76,19 @@ export default function CreateRecipe() {
                 </div>
 
                 {/* Ingredients */}
-                <div className="bg-white p-4 rounded-2xl shadow-sm">
+                <div className="bg-white p-4 rounded-2xl shadow-sm overflow-hidden">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="font-bold">食材清单</h3>
                         <span className="text-xs text-text-light">2 人份</span>
                     </div>
                     {ingredients.map((ing, idx) => (
                         <div key={idx} className="flex gap-3 mb-3 last:mb-0">
-                            <input className="flex-[2] p-2 bg-bg-secondary rounded-lg text-sm" placeholder="食材名" value={ing.name} onChange={(e) => {
+                            <input className="flex-[2] min-w-0 p-2 bg-bg-secondary rounded-lg text-sm" placeholder="食材名" value={ing.name} onChange={(e) => {
                                 const newIngs = [...ingredients];
                                 newIngs[idx].name = e.target.value;
                                 setIngredients(newIngs);
                             }} />
-                            <input className="flex-1 p-2 bg-bg-secondary rounded-lg text-sm" placeholder="用量" value={ing.amount} onChange={(e) => {
+                            <input className="flex-1 min-w-0 p-2 bg-bg-secondary rounded-lg text-sm" placeholder="用量" value={ing.amount} onChange={(e) => {
                                 const newIngs = [...ingredients];
                                 newIngs[idx].amount = e.target.value;
                                 setIngredients(newIngs);
