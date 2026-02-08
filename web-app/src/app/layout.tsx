@@ -1,9 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
     title: "Burning Star Journal",
     description: "Your personal food journal and recipe manager",
+    manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
 };
 
 export default function RootLayout({
@@ -13,7 +21,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="zh">
-            <body className="min-h-screen bg-bg-main text-text-main pb-20">{children}</body>
+            {/* Added select-none to prevent text selection like a native app */}
+            <body className="min-h-screen bg-bg-main text-text-main pb-20 select-none touch-none-action">
+                {children}
+            </body>
         </html>
     );
 }

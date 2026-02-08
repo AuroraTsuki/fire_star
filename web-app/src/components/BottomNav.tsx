@@ -11,7 +11,7 @@ export default function BottomNav() {
     const isActive = (path: string) => pathname === path;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border-light pb-safe pt-2 px-6 flex justify-between items-center z-50 h-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border-light pb-[env(safe-area-inset-bottom)] pt-2 px-6 flex justify-between items-center z-50 h-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <Link href="/" className={`flex flex-col items-center gap-1 ${isActive('/') ? 'text-primary' : 'text-text-soft'}`}>
                 <Home size={24} strokeWidth={isActive('/') ? 2.5 : 2} />
                 <span className="text-xs font-medium">广场</span>
