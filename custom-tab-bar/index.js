@@ -14,8 +14,8 @@ Component({
             },
             {
                 pagePath: "/pages/shopping/shopping",
-                text: "清单",
-                iconClass: "icon-shopping-cart"
+                text: "备菜",
+                iconClass: "icon-edit-note"
             },
             {
                 pagePath: "/pages/create/create",

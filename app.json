@@ -29,7 +29,7 @@
             },
             {
                 "pagePath": "pages/shopping/shopping",
-                "text": "清单",
+                "text": "备菜",
                 "iconPath": "assets/icons/edit_note.png",
                 "selectedIconPath": "assets/icons/edit_note_fill.png"
             },

@@ -63,8 +63,8 @@
       </view>
 
       <button class="add-cart-btn bg-secondary text-white shadow-md active-scale" bindtap="addToShopping">
-        <view class="icon-base icon-shopping-cart text-white mr-2" style="background-color: white;"></view>
-        <text class="font-bold">一键加入采购清单</text>
+        <view class="icon-base icon-edit-note text-white mr-2" style="background-color: white;"></view>
+        <text class="font-bold">加入备菜清单</text>
       </button>
     </view>
 

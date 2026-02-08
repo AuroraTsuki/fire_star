@@ -5,7 +5,7 @@
       <view class="flex size-10 items-center justify-start active-scale" bindtap="goBack">
         <view class="icon-base icon-chevron-left text-lg"></view>
       </view>
-      <text class="text-lg font-bold font-chinese">采购清单</text>
+      <text class="text-lg font-bold font-chinese">备菜清单</text>
       <view class="flex size-10 items-center justify-end active-scale">
         <view class="icon-base icon-menu-dots text-lg"></view>
       </view>
@@ -14,11 +14,11 @@
     <!-- Tabs -->
     <view class="tabs-header flex items-center px-6 border-b">
       <view class="tab-item {{activeTab === 'pending' ? 'active' : ''}} mr-8" bindtap="switchTab" data-tab="pending">
-        <text class="text-sm font-bold">待购清单</text>
+        <text class="text-sm font-bold">待备清单</text>
         <view wx:if="{{activeTab === 'pending'}}" class="tab-indicator bg-success"></view>
       </view>
       <view class="tab-item {{activeTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
-        <text class="text-sm font-bold">已购记录</text>
+        <text class="text-sm font-bold">已备记录</text>
         <view wx:if="{{activeTab === 'completed'}}" class="tab-indicator bg-success"></view>
       </view>
     </view>
@@ -33,7 +33,7 @@
           <!-- Normal Mode Icon / Delete Mode Checkbox -->
           <view wx:if="{{!isDeleteMode}}" class="group-icon-bg bg-success-light flex justify-center items-center rounded-xl mr-3">
              <!-- Always use cart icon as requested -->
-            <view class="icon-base icon-shopping-cart text-success icon-sm"></view>
+            <view class="icon-base icon-edit-note text-success icon-sm"></view>
           </view>
           
           <!-- Delete Mode Group Checkbox -->
@@ -42,7 +42,7 @@
           </view>
 
           <text class="text-base font-bold flex-1">{{item.title}}</text>
-          <text wx:if="{{item.title !== '其他零散采购'}}" class="source-tag text-xs text-light bg-bg-main px-2 py-0.5 rounded-lg">来自菜谱</text>
+          <text wx:if="{{item.title !== '其他零散备菜'}}" class="source-tag text-xs text-light bg-bg-main px-2 py-0.5 rounded-lg">来自菜谱</text>
         </view>
 
         <!-- Group Items -->
@@ -103,7 +103,7 @@
       <view class="group-icon-bg bg-bg-main flex justify-center items-center rounded-full mr-3" style="width: 56rpx; height: 56rpx; border: 2rpx solid #edeceb;">
         <view class="icon-base icon-add text-soft icon-xs"></view>
       </view>
-      <text class="text-base font-bold text-soft">手动添加商品</text>
+      <text class="text-base font-bold text-soft">手动添加食材</text>
     </view>
 
     <!-- Batch Delete Button -->
@@ -111,7 +111,7 @@
       <view class="group-icon-bg bg-bg-main flex justify-center items-center rounded-full mr-3" style="width: 56rpx; height: 56rpx; border: 2rpx solid #edeceb; {{isDeleteMode ? 'background-color: #fee2e2; border-color: #fca5a5;' : ''}}">
         <view class="icon-base icon-delete {{isDeleteMode ? 'text-red' : 'text-soft'}} icon-xs"></view>
       </view>
-      <text class="text-base font-bold {{isDeleteMode ? 'text-red' : 'text-soft'}}">{{isDeleteMode ? (selectedIds.length > 0 ? '确认删除 (' + selectedIds.length + ')' : '取消删除') : '批量管理商品'}}</text>
+      <text class="text-base font-bold {{isDeleteMode ? 'text-red' : 'text-soft'}}">{{isDeleteMode ? (selectedIds.length > 0 ? '确认删除 (' + selectedIds.length + ')' : '取消删除') : '批量管理'}}</text>
     </view>
   </view>
 
@@ -119,7 +119,7 @@
   <view class="bottom-bar-float flex items-center px-6">
     <view class="clear-btn flex items-center justify-center bg-bg-secondary rounded-xl px-6 h-12 active-scale mr-4" bindtap="clearCompleted">
       <view class="icon-base icon-delete text-soft icon-xs mr-2"></view>
-      <text class="text-sm font-medium text-soft">清除已购</text>
+      <text class="text-sm font-medium text-soft">清除已备</text>
     </view>
     <view class="share-btn flex-1 flex items-center justify-center bg-gradient-primary text-white rounded-xl h-12 active-scale shadow-lg" bindtap="shareList">
       <view class="icon-base icon-share text-white icon-sm mr-2"></view>
@@ -131,11 +131,11 @@
   <view class="modal-root z-50 {{showModal ? 'show' : ''}}" catchtouchmove="true">
     <view class="modal-mask bg-black-50 backdrop-blur-sm" bindtap="hideAddModal"></view>
     <view class="modal-content modal-enter-active">
-      <text class="text-xl font-bold mb-6 block text-center">添加新商品</text>
+      <text class="text-xl font-bold mb-6 block text-center">添加新食材</text>
       
       <view class="input-group mb-5">
-        <text class="input-label">商品名称</text>
-        <input class="modal-input" placeholder="请输入商品名称" value="{{newItemName}}" bindinput="onNameInput" focus="{{showModal}}" />
+        <text class="input-label">食材名称</text>
+        <input class="modal-input" placeholder="请输入食材名称" value="{{newItemName}}" bindinput="onNameInput" focus="{{showModal}}" />
       </view>
       
       <view class="input-group mb-8">

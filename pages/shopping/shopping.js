@@ -56,11 +56,11 @@ Page({
 
         const groups = {};
         filteredList.forEach(item => {
-            const source = item.source || '其他零散采购';
+            const source = item.source || '其他零散备菜';
             if (!groups[source]) {
                 groups[source] = {
                     title: source,
-                    iconClass: item.iconClass || 'icon-shopping-cart',
+                    iconClass: item.iconClass || 'icon-edit-note',
                     items: []
                 };
             }
@@ -85,7 +85,7 @@ Page({
 
         wx.showModal({
             title: '删除确认',
-            content: `确定要删除这 ${ids.length} 个商品吗？`,
+            content: `确定要删除这 ${ids.length} 个食材吗？`,
             success: async (res) => {
                 if (res.confirm) {
                     const db = wx.cloud.database();
@@ -193,8 +193,8 @@ Page({
             name: newItemName,
             amount: newItemAmount || '1份',
             completed: false,
-            source: '其他零散采购',
-            iconClass: 'icon-shopping-cart',
+            source: '其他零散备菜',
+            iconClass: 'icon-edit-note',
             createTime: db.serverDate()
         };
 
@@ -244,7 +244,7 @@ Page({
 
         wx.showModal({
             title: '清空确认',
-            content: '确定清空所有已购商品吗？',
+            content: '确定清空所有已备食材吗？',
             success: async (res) => {
                 if (res.confirm) {
                     wx.showLoading({ title: '清空中...' });

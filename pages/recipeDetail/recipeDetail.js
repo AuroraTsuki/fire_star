@@ -111,7 +111,7 @@ Page({
                         amount: ing.amount,
                         completed: false,
                         source: this.data.recipe.title, // Use Recipe Title as group name
-                        iconClass: 'icon-shopping-cart', // Revert to cart icon
+                        iconClass: 'icon-edit-note', // Revert to list icon
                         createTime: db.serverDate()
                     }
                 });
