@@ -38,7 +38,6 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
                 // Check if favorite
                 if (user) {
-                    console.log(`Checking favorite for User: ${user.id}, Recipe: ${params.id}`);
                     const { data: fav, error } = await supabase
                         .from('favorites')
                         .select('id')
@@ -46,12 +45,9 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
                         .eq('recipe_id', params.id)
                         .maybeSingle();
 
-                    if (error) {
-                        console.error("Error checking favorite status:", error);
-                    } else {
-                        console.log("Favorite Logic Result (DB):", fav);
+                    if (!error) {
+                        setIsFavorite(!!fav);
                     }
-                    setIsFavorite(!!fav);
                 }
             }
             setLoading(false);
@@ -121,8 +117,6 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
     if (!recipe) return <div className="min-h-screen bg-bg-main p-10 text-center">菜谱不存在</div>;
 
     const isAuthor = user && recipe.user_id === user.id;
-
-    console.log("Render: isFavorite =", isFavorite);
 
     return (
         <div className="min-h-screen bg-bg-main pb-24">
@@ -213,7 +207,7 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
             {/* Bottom Action */}
             <div className="fixed bottom-0 left-0 right-0 bg-white p-4 pb-8 border-t border-border-light flex items-center gap-4 z-40">
                 <button onClick={handleFavoriteToggle} className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-colors ${isFavorite ? 'bg-red-50 border-red-200 text-red-500' : 'bg-bg-secondary border-transparent text-text-soft'}`}>
-                    <Heart size={24} fill={isFavorite ? "currentColor" : "none"} />
+                    <Heart size={24} fill={isFavorite ? "#ef4444" : "none"} />
                 </button>
                 <button className="flex-1 bg-primary text-white h-12 rounded-xl font-bold shadow-lg shadow-primary/30">
                     开始烹饪
