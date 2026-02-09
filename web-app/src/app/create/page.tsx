@@ -147,7 +147,7 @@ export default function CreateRecipe() {
                     {ingredients.map((ing, idx) => (
                         <div key={idx} className="flex gap-2 mb-3 last:mb-0">
                             <input
-                                className="flex-[2] min-w-0 p-2 bg-bg-secondary rounded-lg text-sm"
+                                className="flex-1 min-w-0 p-2 bg-bg-secondary rounded-lg text-sm"
                                 placeholder="食材名"
                                 value={ing.name}
                                 onChange={(e) => {
