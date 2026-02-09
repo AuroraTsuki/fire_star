@@ -7,7 +7,23 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import { Settings, LogOut, ChevronRight, Heart, BookOpen, Utensils, Camera, X, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import Link from "next/link";
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+};
 
 export default function Profile() {
     const router = useRouter();
@@ -248,7 +264,12 @@ export default function Profile() {
                         我的作品
                     </h3>
 
-                    <div className="grid grid-cols-2 gap-3 mb-2">
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-2 gap-3 mb-2"
+                    >
                         {myRecipes.length === 0 && (
                             <Link href="/create" className="aspect-[4/3] bg-bg-secondary rounded-xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light hover:bg-orange-50 hover:border-orange-200 hover:text-orange-500 transition-colors">
                                 <span className="text-2xl mb-1">+</span>
@@ -256,29 +277,30 @@ export default function Profile() {
                             </Link>
                         )}
                         {myRecipes.map(recipe => (
-                            <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
-                                <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
-                                    <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                                        <img
-                                            src={recipe.image_url || '/placeholder-recipe.jpg'} // Fallback image
-                                            alt={recipe.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="p-2">
-                                        <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
-                                        <div className="flex justify-between items-center text-xs text-text-light mt-1">
-                                            <span>{recipe.cooking_time || '15m'}</span>
-                                            <span>{recipe.views || 0} 阅读</span>
+                            <motion.div key={recipe.id} variants={itemVariants}>
+                                <Link href={`/recipe/${recipe.id}`} className="block group">
+                                    <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
+                                        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                                            <img
+                                                src={recipe.image_url || '/placeholder-recipe.jpg'} // Fallback image
+                                                alt={recipe.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
+                                                }}
+                                            />
                                         </div>
-                                    </div>
-                                </div>
-                            </Link>
+                                        <div className="p-2">
+                                            <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
+                                            <div className="flex justify-between items-center text-xs text-text-light mt-1">
+                                                <span>{recipe.cooking_time || '15m'}</span>
+                                                <span>{recipe.views || 0} 阅读</span>
+                                            </div>
+                                        </div>
+                                </Link>
+                            </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
 
 
@@ -294,105 +316,111 @@ export default function Profile() {
                         </span>
                     </div>
                     {favoriteRecipes.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-3">
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="grid grid-cols-2 gap-3"
+                        >
                             {favoriteRecipes.map(recipe => (
-                                <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
-                                    <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
-                                        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                                            <img
-                                                src={recipe.image_url || '/placeholder-recipe.jpg'}
-                                                alt={recipe.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="p-2">
-                                            <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
-                                            <div className="flex justify-between items-center text-xs text-text-light mt-1">
-                                                <span>{recipe.cooking_time || '15m'}</span>
-                                                <div className="flex items-center gap-1">
-                                                    <Heart size={10} className="fill-red-500 text-red-500" />
+                                <motion.div key={recipe.id} variants={itemVariants}>
+                                    <Link href={`/recipe/${recipe.id}`} className="block group">
+                                        <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
+                                            <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                                                <img
+                                                    src={recipe.image_url || '/placeholder-recipe.jpg'}
+                                                    alt={recipe.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="p-2">
+                                                <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
+                                                <div className="flex justify-between items-center text-xs text-text-light mt-1">
+                                                    <span>{recipe.cooking_time || '15m'}</span>
+                                                    <div className="flex items-center gap-1">
+                                                        <Heart size={10} className="fill-red-500 text-red-500" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
+                                    </Link>
                             ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-8 text-text-light text-sm">
-                            暂无收藏
-                        </div>
+                                </div>
+                            ) : (
+                            <div className="text-center py-8 text-text-light text-sm">
+                                暂无收藏
+                            </div>
                     )}
-                </div>
+                        </div>
 
                 {/* Sign Out Button */}
-                <button
-                    onClick={handleSignOut}
-                    className="w-full bg-white p-4 rounded-xl text-red-500 font-bold shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]"
-                >
-                    <LogOut size={18} />
-                    退出登录
-                </button>
-            </div>
+                    <button
+                        onClick={handleSignOut}
+                        className="w-full bg-white p-4 rounded-xl text-red-500 font-bold shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]"
+                    >
+                        <LogOut size={18} />
+                        退出登录
+                    </button>
+                </div>
 
-            {/* Edit Profile Modal */}
-            {
-                isEditing && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsEditing(false)}></div>
-                        <div className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 animate-in fade-in zoom-in duration-200">
-                            <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 text-text-light hover:text-text-main">
-                                <X size={20} />
-                            </button>
-                            <h3 className="text-xl font-bold text-center mb-6">编辑资料</h3>
+                {/* Edit Profile Modal */}
+                {
+                    isEditing && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsEditing(false)}></div>
+                            <div className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 animate-in fade-in zoom-in duration-200">
+                                <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 text-text-light hover:text-text-main">
+                                    <X size={20} />
+                                </button>
+                                <h3 className="text-xl font-bold text-center mb-6">编辑资料</h3>
 
-                            <div className="mb-6 flex justify-center">
-                                <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                                    {profile?.avatar_url ? (
-                                        <img src={profile.avatar_url} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-4xl text-text-light">
-                                            {profile?.username?.[0]?.toUpperCase() || 'U'}
+                                <div className="mb-6 flex justify-center">
+                                    <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                                        {profile?.avatar_url ? (
+                                            <img src={profile.avatar_url} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-4xl text-text-light">
+                                                {profile?.username?.[0]?.toUpperCase() || 'U'}
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Camera className="text-white" size={32} />
                                         </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Camera className="text-white" size={32} />
+                                        {uploading && (
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                                <Loader2 className="text-white animate-spin" size={32} />
+                                            </div>
+                                        )}
                                     </div>
-                                    {uploading && (
-                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                            <Loader2 className="text-white animate-spin" size={32} />
-                                        </div>
-                                    )}
                                 </div>
-                            </div>
 
-                            <div className="mb-8">
-                                <label className="block text-sm text-text-light mb-1">用户昵称</label>
-                                <input
-                                    autoFocus
-                                    className="w-full p-3 bg-bg-secondary rounded-xl outline-none focus:ring-2 focus:ring-primary/50"
-                                    value={editName}
-                                    onChange={e => setEditName(e.target.value)}
-                                />
-                            </div>
+                                <div className="mb-8">
+                                    <label className="block text-sm text-text-light mb-1">用户昵称</label>
+                                    <input
+                                        autoFocus
+                                        className="w-full p-3 bg-bg-secondary rounded-xl outline-none focus:ring-2 focus:ring-primary/50"
+                                        value={editName}
+                                        onChange={e => setEditName(e.target.value)}
+                                    />
+                                </div>
 
-                            <button
-                                onClick={handleUpdateProfile}
-                                disabled={uploading}
-                                className="w-full py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
-                            >
-                                {uploading ? <Loader2 className="animate-spin" /> : "保存修改"}
-                            </button>
+                                <button
+                                    onClick={handleUpdateProfile}
+                                    disabled={uploading}
+                                    className="w-full py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
+                                >
+                                    {uploading ? <Loader2 className="animate-spin" /> : "保存修改"}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )
-            }
+                    )
+                }
 
-            <BottomNav />
-        </div >
-    );
+                <BottomNav />
+            </div >
+            );
 }
 
