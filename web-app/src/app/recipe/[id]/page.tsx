@@ -14,12 +14,13 @@ interface RecipeDetailProps {
 
 export default function RecipeDetail({ params }: RecipeDetailProps) {
     const router = useRouter();
-    const [recipe, setRecipe] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
         async function fetchRecipe() {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+
             const { data, error } = await supabase
                 .from("recipes")
                 .select(`
@@ -31,8 +32,6 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
             if (data) {
                 setRecipe(data);
-                // Fetch ingredients and steps would go here or be continuous if structured that way
-                // For now assuming joined or simple structure for demo
             }
             setLoading(false);
         }
@@ -40,13 +39,29 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
     }, [params.id]);
 
     const addToShoppingList = async () => {
-        // Add ingredients to shopping list
-        // Mock logic
         alert("已加入备菜清单");
+    };
+
+    const handleDelete = async () => {
+        if (!confirm("确定要删除这个菜谱吗？")) return;
+
+        const { error } = await supabase
+            .from("recipes")
+            .delete()
+            .eq("id", params.id);
+
+        if (error) {
+            alert("删除失败: " + error.message);
+        } else {
+            alert("菜谱已删除");
+            router.replace("/profile");
+        }
     };
 
     if (loading) return <div className="min-h-screen bg-bg-main p-10 text-center">加载中...</div>;
     if (!recipe) return <div className="min-h-screen bg-bg-main p-10 text-center">菜谱不存在</div>;
+
+    const isAuthor = user && recipe.user_id === user.id;
 
     return (
         <div className="min-h-screen bg-bg-main pb-24">
@@ -54,6 +69,11 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
             <div className="fixed top-0 left-0 right-0 z-40 p-safe flex justify-between items-center px-4 py-2 bg-gradient-to-b from-black/50 to-transparent">
                 <button onClick={() => router.back()} className="bg-white/90 backdrop-blur rounded-full p-2 shadow-sm"><ChevronLeft size={20} /></button>
                 <div className="flex gap-3">
+                    {isAuthor && (
+                        <button onClick={handleDelete} className="bg-white/90 backdrop-blur rounded-full p-2 shadow-sm text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
+                        </button>
+                    )}
                     <button className="bg-white/90 backdrop-blur rounded-full p-2 shadow-sm"><Share2 size={20} /></button>
                 </div>
             </div>
