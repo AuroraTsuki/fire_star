@@ -307,9 +307,39 @@ export default function Profile() {
                             全部 <ChevronRight size={12} />
                         </span>
                     </div>
-                    <div className="text-center py-8 text-text-light text-sm">
-                        暂无收藏
-                    </div>
+                    {favoriteRecipes.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-3">
+                            {favoriteRecipes.map(recipe => (
+                                <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
+                                    <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
+                                        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                                            <img
+                                                src={recipe.image_url || '/placeholder-recipe.jpg'}
+                                                alt={recipe.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="p-2">
+                                            <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
+                                            <div className="flex justify-between items-center text-xs text-text-light mt-1">
+                                                <span>{recipe.cooking_time || '15m'}</span>
+                                                <div className="flex items-center gap-1">
+                                                    <Heart size={10} className="fill-red-500 text-red-500" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-text-light text-sm">
+                            暂无收藏
+                        </div>
+                    )}
                 </div>
 
                 {/* Sign Out Button */}
