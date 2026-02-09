@@ -6,6 +6,22 @@ import { supabase } from "@/lib/supabase";
 import BottomNav from "@/components/BottomNav";
 import { Search, Clock, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    show: { opacity: 1, x: 0 }
+};
 
 interface Recipe {
     id: string;
@@ -97,43 +113,50 @@ export default function Home() {
             </div>
 
             {/* Recipe List */}
-            <div className="px-4 grid grid-cols-2 gap-3">
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="px-4 grid grid-cols-2 gap-3"
+            >
                 {loading ? (
                     <div className="col-span-2 text-center py-20 text-text-light">加载中...</div>
                 ) : recipes.length === 0 ? (
                     <div className="col-span-2 text-center py-20 text-text-light">暂无相关菜谱</div>
                 ) : (
                     recipes.map((recipe) => (
-                        <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
-                            <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                                <div className="relative aspect-[4/3] overflow-hidden">
-                                    <img
-                                        src={recipe.image_url || 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVzc2VydHxlbnwwfHwwfHx8MA%3D%3D'}
-                                        alt={recipe.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-lg flex items-center gap-1 text-white text-[10px]">
-                                        <TrendingUp size={10} />
-                                        <span>{recipe.views || 0}</span>
-                                    </div>
-                                </div>
-                                <div className="p-3">
-                                    <h3 className="font-bold text-sm mb-2 truncate">{recipe.title}</h3>
-                                    <div className="flex justify-between items-center text-xs text-text-light">
-                                        <div className="flex items-center gap-1">
-                                            <Clock size={12} />
-                                            <span>{recipe.cooking_time || '15m'}</span>
+                        <motion.div key={recipe.id} variants={itemVariants}>
+                            <Link href={`/recipe/${recipe.id}`} className="block group">
+                                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+                                    <div className="relative aspect-[4/3] overflow-hidden">
+                                        <img
+                                            src={recipe.image_url || 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVzc2VydHxlbnwwfHwwfHx8MA%3D%3D'}
+                                            alt={recipe.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-lg flex items-center gap-1 text-white text-[10px]">
+                                            <TrendingUp size={10} />
+                                            <span>{recipe.views || 0}</span>
                                         </div>
-                                        <span className={`${recipe.difficulty === 'Easy' ? 'text-success' : 'text-primary'}`}>
-                                            {recipe.difficulty || '初级'}
-                                        </span>
+                                    </div>
+                                    <div className="p-3">
+                                        <h3 className="font-bold text-sm mb-2 truncate">{recipe.title}</h3>
+                                        <div className="flex justify-between items-center text-xs text-text-light">
+                                            <div className="flex items-center gap-1">
+                                                <Clock size={12} />
+                                                <span>{recipe.cooking_time || '15m'}</span>
+                                            </div>
+                                            <span className={`${recipe.difficulty === 'Easy' ? 'text-success' : 'text-primary'}`}>
+                                                {recipe.difficulty || '初级'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        </motion.div>
                     ))
                 )}
-            </div>
+            </motion.div>
 
             <BottomNav />
         </div>

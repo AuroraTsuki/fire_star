@@ -28,12 +28,18 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
                 .from("recipes")
                 .select(`
             *,
-            author:user_id ( username, avatar_url )
+            author:user_id ( username, avatar_url ),
+            ingredients (*),
+            steps (*)
         `)
                 .eq("id", params.id)
                 .single();
 
             if (data) {
+                // Sort steps by step_number
+                if (data.steps) {
+                    data.steps.sort((a: any, b: any) => a.step_number - b.step_number);
+                }
                 setRecipe(data);
 
                 // Check if favorite
