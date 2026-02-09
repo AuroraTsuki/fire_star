@@ -16,15 +16,12 @@ export default function WelcomeWrapper({ children }: { children: React.ReactNode
 
     useEffect(() => {
         setIsClient(true);
-        const hasVisited = localStorage.getItem('hasVisited');
-        if (hasVisited) {
-            setShowWelcome(false);
-        }
+        // Always show welcome page on every visit
     }, []);
 
     const handleEnterApp = () => {
         setShowWelcome(false);
-        localStorage.setItem('hasVisited', 'true');
+        // Removed localStorage persistence - show welcome every time
     };
 
     if (!isClient) return null; // Prevent hydration mismatch
