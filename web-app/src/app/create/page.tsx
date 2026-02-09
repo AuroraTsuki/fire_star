@@ -14,7 +14,7 @@ export default function CreateRecipe() {
     const [loading, setLoading] = useState(false);
     const UNITS = ["g", "mg", "kg", "ml", "L", "勺", "适量", "少许", "个", "根", "瓣", "碗", "片", "只"];
     const [ingredients, setIngredients] = useState<{ name: string, value: string, unit: string }[]>([{ name: "", value: "", unit: "g" }]);
-    const [steps, setSteps] = useState([{ title: "", description: "" }]);
+    const [steps, setSteps] = useState([{ title: "", description: "", image_url: "", uploading: false }]);
 
     const [image, setImage] = useState("");
     const [uploading, setUploading] = useState(false);
@@ -47,6 +47,37 @@ export default function CreateRecipe() {
             alert(`上传失败: ${msg}`);
         } finally {
             setUploading(false);
+        }
+    };
+
+    const handleStepImageUpload = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0) return;
+
+            const newSteps = [...steps];
+            newSteps[index].uploading = true;
+            setSteps(newSteps);
+
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const filePath = `step-${Math.random()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('recipes')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data } = supabase.storage.from('recipes').getPublicUrl(filePath);
+
+            newSteps[index].image_url = data.publicUrl;
+            setSteps(newSteps);
+        } catch (error: any) {
+            alert(`步骤图上传失败: ${error.message}`);
+        } finally {
+            const newSteps = [...steps];
+            newSteps[index].uploading = false;
+            setSteps(newSteps);
         }
     };
 
@@ -92,8 +123,19 @@ export default function CreateRecipe() {
             if (ingError) console.error("Error adding ingredients:", ingError);
         }
 
-        // 3. Add Steps (Mock implementation for now)
-        // ...
+        // 3. Add Steps
+        if (steps.length > 0 && steps[0].description) {
+            const { error: stepError } = await supabase.from("steps").insert(
+                steps.map((step, idx) => ({
+                    recipe_id: recipe.id,
+                    step_number: idx + 1,
+                    title: step.title,
+                    description: step.description,
+                    image_url: step.image_url
+                }))
+            );
+            if (stepError) console.error("Error adding steps:", stepError);
+        }
 
         setLoading(false);
         alert("菜谱发布成功！");
@@ -209,13 +251,24 @@ export default function CreateRecipe() {
                                     setSteps(newSteps);
                                 }}
                             />
-                            <div className="w-20 h-20 bg-bg-secondary rounded-lg flex items-center justify-center text-text-light cursor-pointer hover:bg-gray-200 transition-colors">
-                                <Upload size={20} />
+                            <div className="relative w-20 h-20 bg-bg-secondary rounded-lg flex items-center justify-center text-text-light cursor-pointer hover:bg-gray-200 transition-colors overflow-hidden">
+                                {step.image_url ? (
+                                    <img src={step.image_url} alt={`Step ${idx + 1}`} className="w-full h-full object-cover" />
+                                ) : (
+                                    <Upload size={20} className={step.uploading ? "animate-bounce" : ""} />
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                    onChange={(e) => handleStepImageUpload(idx, e)}
+                                    disabled={step.uploading}
+                                />
                             </div>
                         </div>
                     ))}
                     <button
-                        onClick={() => setSteps([...steps, { title: "", description: "" }])}
+                        onClick={() => setSteps([...steps, { title: "", description: "", image_url: "", uploading: false }])}
                         className="w-full py-3 bg-bg-secondary rounded-xl text-text-soft font-bold flex items-center justify-center"
                     >
                         <Plus size={18} className="mr-2" />
