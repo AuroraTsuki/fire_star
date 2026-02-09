@@ -12,24 +12,67 @@ interface ShoppingItem {
     amount: string;
     is_completed: boolean;
     source_recipe_id?: string;
+    recipe?: {
+        id: string;
+        title: string;
+        image_url?: string;
+    };
+}
+
+interface GroupedItems {
+    recipeId: string | null;
+    recipeName: string;
+    recipeImage?: string;
+    items: ShoppingItem[];
 }
 
 export default function ShoppingList() {
     const [items, setItems] = useState<ShoppingItem[]>([]);
+    const [groupedItems, setGroupedItems] = useState<GroupedItems[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'pending' | 'completed'>('pending');
+    const [viewMode, setViewMode] = useState<'grouped' | 'merged'>('grouped');
     const [showModal, setShowModal] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [newItemAmount, setNewItemAmount] = useState("");
+
+    const groupByRecipe = (items: ShoppingItem[]): GroupedItems[] => {
+        const groups = new Map<string | null, GroupedItems>();
+
+        items.forEach(item => {
+            const key = item.source_recipe_id || null;
+            if (!groups.has(key)) {
+                groups.set(key, {
+                    recipeId: item.source_recipe_id || null,
+                    recipeName: item.recipe?.title || '手动添加',
+                    recipeImage: item.recipe?.image_url,
+                    items: []
+                });
+            }
+            groups.get(key)!.items.push(item);
+        });
+
+        return Array.from(groups.values());
+    };
 
     const fetchItems = async () => {
         setLoading(true);
         const { data } = await supabase
             .from("shopping_list")
-            .select("*")
+            .select(`
+                *,
+                recipe:source_recipe_id (
+                    id,
+                    title,
+                    image_url
+                )
+            `)
             .order("created_at", { ascending: false });
 
-        if (data) setItems(data as any);
+        if (data) {
+            setItems(data as any);
+            setGroupedItems(groupByRecipe(data as any));
+        }
         setLoading(false);
     };
 
@@ -39,7 +82,9 @@ export default function ShoppingList() {
 
     const toggleItem = async (id: string, currentStatus: boolean) => {
         // Optimistic Update
-        setItems(items.map(i => i.id === id ? { ...i, is_completed: !currentStatus } : i));
+        const updatedItems = items.map(i => i.id === id ? { ...i, is_completed: !currentStatus } : i);
+        setItems(updatedItems);
+        setGroupedItems(groupByRecipe(updatedItems));
 
         await supabase.from("shopping_list").update({ is_completed: !currentStatus }).eq("id", id);
     };
@@ -54,15 +99,13 @@ export default function ShoppingList() {
             user_id: (await supabase.auth.getUser()).data.user?.id
         };
 
-        // For demo, if no auth, we just add to local state broadly (backend will reject if RLS active without auth)
-        // Assuming auth is handled or anon is allowed for demo
-        // We'll just push to local state to show UI if fetch fails
         const { data, error } = await supabase.from("shopping_list").insert(newItem).select().single();
 
         if (data) {
-            setItems([data as any, ...items]);
+            const updatedItems = [data as any, ...items];
+            setItems(updatedItems);
+            setGroupedItems(groupByRecipe(updatedItems));
         } else {
-            // Fallback or Error handling
             console.error(error);
         }
 
@@ -74,7 +117,9 @@ export default function ShoppingList() {
     const clearCompleted = async () => {
         const toDelete = items.filter(i => i.is_completed).map(i => i.id);
         await supabase.from("shopping_list").delete().in("id", toDelete);
-        setItems(items.filter(i => !i.is_completed));
+        const updatedItems = items.filter(i => !i.is_completed);
+        setItems(updatedItems);
+        setGroupedItems(groupByRecipe(updatedItems));
     };
 
     const filteredItems = items.filter(i => activeTab === 'pending' ? !i.is_completed : i.is_completed);
@@ -106,33 +151,75 @@ export default function ShoppingList() {
                 </div>
             </div>
 
-            <div className="p-4 space-y-4">
-                {/* Default Group for now */}
-                <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                    <div className="p-4 flex items-center bg-success/10">
-                        <div className="bg-white rounded-full p-1 mr-3">
-                            <ClipboardList className="text-success" size={16} />
-                        </div>
-                        <span className="font-bold flex-1">食材清单</span>
-                    </div>
+            <div className="p-4 space-y-4 pb-32">
+                {viewMode === 'grouped' ? (
+                    // Grouped by Recipe View
+                    groupedItems
+                        .filter(group => group.items.some(i => activeTab === 'pending' ? !i.is_completed : i.is_completed))
+                        .map(group => {
+                            const filteredGroupItems = group.items.filter(i => activeTab === 'pending' ? !i.is_completed : i.is_completed);
+                            if (filteredGroupItems.length === 0) return null;
 
-                    <div>
-                        {filteredItems.map(item => (
-                            <div key={item.id} onClick={() => toggleItem(item.id, item.is_completed)} className="flex items-center p-4 border-b border-border-light last:border-none active:bg-gray-50 transition-colors cursor-pointer">
-                                <div className={`w-5 h-5 rounded border mr-3 flex items-center justify-center transition-colors ${item.is_completed ? 'bg-success border-success' : 'border-gray-300'}`}>
-                                    {item.is_completed && <Check size={14} className="text-white" />}
+                            return (
+                                <div key={group.recipeId || 'manual'} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                                    {/* Card Header */}
+                                    <div className="p-4 flex items-center bg-success/10">
+                                        {group.recipeImage ? (
+                                            <img src={group.recipeImage} alt={group.recipeName} className="w-10 h-10 rounded-lg object-cover mr-3" />
+                                        ) : (
+                                            <div className="bg-white rounded-full p-1 mr-3">
+                                                <ClipboardList className="text-success" size={16} />
+                                            </div>
+                                        )}
+                                        <span className="font-bold flex-1">{group.recipeName}</span>
+                                        <span className="text-xs text-text-light">{filteredGroupItems.length} 项</span>
+                                    </div>
+
+                                    {/* Ingredients List */}
+                                    <div>
+                                        {filteredGroupItems.map(item => (
+                                            <div key={item.id} onClick={() => toggleItem(item.id, item.is_completed)} className="flex items-center p-4 border-b border-border-light last:border-none active:bg-gray-50 transition-colors cursor-pointer">
+                                                <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-colors ${item.is_completed ? 'bg-success border-success' : 'border-gray-300'}`}>
+                                                    {item.is_completed && <Check size={14} className="text-white" />}
+                                                </div>
+                                                <span className={`flex-1 text-base ${item.is_completed ? 'text-text-light line-through' : 'text-text-main'}`}>{item.name}</span>
+                                                <span className="text-sm text-text-light">{item.amount}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <span className={`flex-1 text-base ${item.is_completed ? 'text-text-light line-through' : 'text-text-main'}`}>{item.name}</span>
-                                <span className="text-sm text-text-light">{item.amount}</span>
+                            );
+                        })
+                ) : (
+                    // Merged View
+                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                        <div className="p-4 flex items-center bg-success/10">
+                            <div className="bg-white rounded-full p-1 mr-3">
+                                <ClipboardList className="text-success" size={16} />
                             </div>
-                        ))}
-                        {filteredItems.length === 0 && (
-                            <div className="p-8 text-center text-text-light text-sm">
-                                {activeTab === 'pending' ? '没有待备食材' : '没有已备记录'}
-                            </div>
-                        )}
+                            <span className="font-bold flex-1">合计清单</span>
+                        </div>
+
+                        <div>
+                            {items
+                                .filter(i => activeTab === 'pending' ? !i.is_completed : i.is_completed)
+                                .map(item => (
+                                    <div key={item.id} onClick={() => toggleItem(item.id, item.is_completed)} className="flex items-center p-4 border-b border-border-light last:border-none active:bg-gray-50 transition-colors cursor-pointer">
+                                        <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center transition-colors ${item.is_completed ? 'bg-success border-success' : 'border-gray-300'}`}>
+                                            {item.is_completed && <Check size={14} className="text-white" />}
+                                        </div>
+                                        <span className={`flex-1 text-base ${item.is_completed ? 'text-text-light line-through' : 'text-text-main'}`}>{item.name}</span>
+                                        <span className="text-sm text-text-light">{item.amount}</span>
+                                    </div>
+                                ))}
+                            {items.filter(i => activeTab === 'pending' ? !i.is_completed : i.is_completed).length === 0 && (
+                                <div className="p-8 text-center text-text-light text-sm">
+                                    {activeTab === 'pending' ? '没有待备食材' : '没有已备记录'}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <button onClick={() => setShowModal(true)} className="w-full bg-white p-4 rounded-xl flex items-center justify-center gap-2 text-text-soft font-bold shadow-sm active:scale-[0.98] transition-transform">
                     <div className="w-6 h-6 rounded-full border-2 border-border-light flex items-center justify-center">
@@ -143,14 +230,26 @@ export default function ShoppingList() {
             </div>
 
             {/* Floating Action Bar */}
-            <div className="fixed bottom-24 left-4 right-4 flex gap-3">
-                <button onClick={clearCompleted} className="flex items-center justify-center bg-bg-secondary text-text-soft px-3 h-12 rounded-xl font-medium shadow-sm w-auto whitespace-nowrap">
-                    <Trash2 size={16} className="mr-1" />
-                    清除已备
-                </button>
-                <button className="flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white px-3 h-12 rounded-xl font-bold shadow-lg flex-1 whitespace-nowrap">
-                    <Share2 size={18} className="mr-1" />
-                    分享清单
+            <div className="fixed bottom-24 left-4 right-4 space-y-2">
+                {/* Row 1: Clear + Share */}
+                <div className="flex gap-3">
+                    <button onClick={clearCompleted} className="flex-1 flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white h-12 rounded-xl font-bold shadow-lg active:scale-[0.98] transition-transform">
+                        <Trash2 size={18} className="mr-1" />
+                        清除已备
+                    </button>
+                    <button className="flex-1 flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white h-12 rounded-xl font-bold shadow-lg active:scale-[0.98] transition-transform">
+                        <Share2 size={18} className="mr-1" />
+                        分享清单
+                    </button>
+                </div>
+
+                {/* Row 2: Merge Toggle */}
+                <button
+                    onClick={() => setViewMode(viewMode === 'grouped' ? 'merged' : 'grouped')}
+                    className="w-full flex items-center justify-center bg-gradient-to-r from-orange-400 to-pink-500 text-white h-12 rounded-xl font-bold shadow-lg active:scale-[0.98] transition-transform"
+                >
+                    <ClipboardList size={18} className="mr-1" />
+                    {viewMode === 'grouped' ? '合计清单' : '按菜谱分组'}
                 </button>
             </div>
 
