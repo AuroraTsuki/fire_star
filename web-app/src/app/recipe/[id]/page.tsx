@@ -122,6 +122,8 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
     const isAuthor = user && recipe.user_id === user.id;
 
+    console.log("Render: isFavorite =", isFavorite);
+
     return (
         <div className="min-h-screen bg-bg-main pb-24">
             {/* Nav */}
