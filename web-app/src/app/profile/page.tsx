@@ -15,6 +15,7 @@ export default function Profile() {
     const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [myRecipes, setMyRecipes] = useState<any[]>([]);
+    const [favoriteRecipes, setFavoriteRecipes] = useState<any[]>([]);
 
     // Edit Mode State
     const [isEditing, setIsEditing] = useState(false);
@@ -32,6 +33,7 @@ export default function Profile() {
                 return;
             }
 
+            console.log("Current User ID:", user.id);
             setUser(user);
 
             // Fetch Profile
@@ -54,14 +56,34 @@ export default function Profile() {
             }
 
             // Fetch My Recipes
-            const { data: recipesData } = await supabase
+            const { data: recipesData, error: recipesError } = await supabase
                 .from('recipes')
                 .select('*')
                 .eq('user_id', user.id)
                 .order('created_at', { ascending: false });
 
-            if (recipesData) {
-                setMyRecipes(recipesData);
+            if (recipesError) {
+                console.error("Error fetching my recipes:", recipesError);
+            } else {
+                console.log("My Recipes:", recipesData);
+                setMyRecipes(recipesData || []);
+            }
+
+            // Fetch Favorites
+            const { data: favoritesData, error: favError } = await supabase
+                .from('favorites')
+                .select(`
+                    recipe_id,
+                    recipes:recipe_id (*)
+                `)
+                .eq('user_id', user.id);
+
+            if (favError) {
+                console.error("Error fetching favorites:", favError);
+            } else {
+                const favs = favoritesData.map((f: any) => f.recipes).filter(Boolean);
+                console.log("Favorite Recipes:", favs);
+                setFavoriteRecipes(favs);
             }
 
             setLoading(false);

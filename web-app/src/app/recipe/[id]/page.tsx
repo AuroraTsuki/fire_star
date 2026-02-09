@@ -35,6 +35,21 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
             if (data) {
                 setRecipe(data);
+
+                // Check if favorite
+                if (user) {
+                    const { data: fav, error } = await supabase
+                        .from('favorites')
+                        .select('id')
+                        .eq('user_id', user.id)
+                        .eq('recipe_id', params.id)
+                        .maybeSingle();
+
+                    if (error) {
+                        console.error("Error checking favorite status:", error);
+                    }
+                    setIsFavorite(!!fav);
+                }
             }
             setLoading(false);
         }
@@ -43,6 +58,44 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
     const addToShoppingList = async () => {
         alert("已加入备菜清单");
+    };
+
+    const handleFavoriteToggle = async () => {
+        if (!user) {
+            alert("请先登录");
+            return;
+        }
+
+        if (isFavorite) {
+            // Unfavorite
+            const { error } = await supabase
+                .from('favorites')
+                .delete()
+                .eq('user_id', user.id)
+                .eq('recipe_id', params.id);
+
+            if (error) {
+                console.error(error);
+                alert("取消收藏失败");
+            } else {
+                setIsFavorite(false);
+            }
+        } else {
+            // Favorite
+            const { error } = await supabase
+                .from('favorites')
+                .insert({
+                    user_id: user.id,
+                    recipe_id: params.id
+                });
+
+            if (error) {
+                console.error(error);
+                alert("收藏失败");
+            } else {
+                setIsFavorite(true);
+            }
+        }
     };
 
     const handleDelete = async () => {
@@ -154,7 +207,7 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
             {/* Bottom Action */}
             <div className="fixed bottom-0 left-0 right-0 bg-white p-4 pb-8 border-t border-border-light flex items-center gap-4 z-40">
-                <button onClick={() => setIsFavorite(!isFavorite)} className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-colors ${isFavorite ? 'bg-red-50 border-red-200 text-red-500' : 'bg-bg-secondary border-transparent text-text-soft'}`}>
+                <button onClick={handleFavoriteToggle} className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-colors ${isFavorite ? 'bg-red-50 border-red-200 text-red-500' : 'bg-bg-secondary border-transparent text-text-soft'}`}>
                     <Heart size={24} fill={isFavorite ? "currentColor" : "none"} />
                 </button>
                 <button className="flex-1 bg-primary text-white h-12 rounded-xl font-bold shadow-lg shadow-primary/30">
