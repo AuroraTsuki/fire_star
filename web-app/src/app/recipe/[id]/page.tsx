@@ -15,6 +15,9 @@ interface RecipeDetailProps {
 export default function RecipeDetail({ params }: RecipeDetailProps) {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
+    const [recipe, setRecipe] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         async function fetchRecipe() {

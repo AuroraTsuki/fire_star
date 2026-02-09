@@ -11,7 +11,16 @@ import Link from "next/link";
 
 export default function Profile() {
     const router = useRouter();
+    const [user, setUser] = useState<any>(null);
+    const [profile, setProfile] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [myRecipes, setMyRecipes] = useState<any[]>([]);
+
+    // Edit Mode State
+    const [isEditing, setIsEditing] = useState(false);
+    const [editName, setEditName] = useState("");
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         async function getData() {
