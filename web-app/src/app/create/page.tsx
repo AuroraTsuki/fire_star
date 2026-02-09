@@ -101,7 +101,7 @@ export default function CreateRecipe() {
             user_id: user.id,
             image_url: image,
             difficulty: "Easy",
-            time: "15m"
+            cooking_time: "15m"
         }).select().single();
 
         if (error || !recipe) {
