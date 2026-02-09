@@ -11,6 +11,8 @@ import Link from "next/link";
 export default function CreateRecipe() {
     const router = useRouter();
     const [title, setTitle] = useState("");
+    const [cookingTime, setCookingTime] = useState("");
+    const [difficulty, setDifficulty] = useState("简单");
     const [loading, setLoading] = useState(false);
     const UNITS = ["g", "mg", "kg", "ml", "L", "勺", "适量", "少许", "个", "根", "瓣", "碗", "片", "只"];
     const [ingredients, setIngredients] = useState<{ name: string, value: string, unit: string }[]>([{ name: "", value: "", unit: "g" }]);
@@ -100,8 +102,8 @@ export default function CreateRecipe() {
             title,
             user_id: user.id,
             image_url: image,
-            difficulty: "Easy",
-            cooking_time: "15m"
+            difficulty: difficulty || "简单",
+            cooking_time: cookingTime || "15分钟"
         }).select().single();
 
         if (error || !recipe) {
@@ -178,6 +180,31 @@ export default function CreateRecipe() {
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                     />
+                </div>
+
+                {/* Cooking Time & Difficulty */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-bold mb-2">烹饪时间</label>
+                        <input
+                            className="w-full p-4 bg-white rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="例如: 30分钟"
+                            value={cookingTime}
+                            onChange={e => setCookingTime(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold mb-2">难度等级</label>
+                        <select
+                            className="w-full p-4 bg-white rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-primary/50"
+                            value={difficulty}
+                            onChange={e => setDifficulty(e.target.value)}
+                        >
+                            <option value="简单">简单</option>
+                            <option value="中等">中等</option>
+                            <option value="困难">困难</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* Ingredients */}

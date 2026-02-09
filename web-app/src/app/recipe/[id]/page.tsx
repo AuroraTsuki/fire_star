@@ -62,7 +62,31 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
     }, [params.id]);
 
     const addToShoppingList = async () => {
-        alert("已加入备菜清单");
+        if (!user) {
+            alert("请先登录");
+            return;
+        }
+        if (!recipe?.ingredients?.length) {
+            alert("该菜谱没有食材");
+            return;
+        }
+
+        const items = recipe.ingredients.map((ing: any) => ({
+            user_id: user.id,
+            name: ing.name,
+            amount: ing.amount,
+            source_recipe_id: recipe.id,
+            is_completed: false
+        }));
+
+        const { error } = await supabase.from('shopping_list').insert(items);
+
+        if (error) {
+            console.error(error);
+            alert("添加失败: " + error.message);
+        } else {
+            alert("已加入备菜清单");
+        }
     };
 
     const handleFavoriteToggle = async () => {
