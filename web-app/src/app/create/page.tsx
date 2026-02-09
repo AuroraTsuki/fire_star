@@ -12,7 +12,8 @@ export default function CreateRecipe() {
     const router = useRouter();
     const [title, setTitle] = useState("");
     const [loading, setLoading] = useState(false);
-    const [ingredients, setIngredients] = useState([{ name: "", amount: "" }]);
+    const UNITS = ["g", "mg", "kg", "ml", "L", "勺", "适量", "少许", "个", "根", "瓣", "碗", "片", "只"];
+    const [ingredients, setIngredients] = useState<{ name: string, value: string, unit: string }[]>([{ name: "", value: "", unit: "g" }]);
     const [steps, setSteps] = useState([{ title: "", description: "" }]);
 
     const [image, setImage] = useState("");
@@ -79,13 +80,13 @@ export default function CreateRecipe() {
             return;
         }
 
-        // 2. Add Ingredients (Mock implementation for now)
+        // 2. Add Ingredients
         if (ingredients.length > 0 && ingredients[0].name) {
             const { error: ingError } = await supabase.from("ingredients").insert(
                 ingredients.map(ing => ({
                     recipe_id: recipe.id,
                     name: ing.name,
-                    amount: ing.amount,
+                    amount: (ing.unit === "适量" || ing.unit === "少许") ? ing.unit : `${ing.value}${ing.unit}`,
                 }))
             );
             if (ingError) console.error("Error adding ingredients:", ingError);
@@ -144,21 +145,47 @@ export default function CreateRecipe() {
                         <span className="text-xs text-text-light">2 人份</span>
                     </div>
                     {ingredients.map((ing, idx) => (
-                        <div key={idx} className="flex gap-3 mb-3 last:mb-0">
-                            <input className="flex-[2] min-w-0 p-2 bg-bg-secondary rounded-lg text-sm" placeholder="食材名" value={ing.name} onChange={(e) => {
-                                const newIngs = [...ingredients];
-                                newIngs[idx].name = e.target.value;
-                                setIngredients(newIngs);
-                            }} />
-                            <input className="flex-1 min-w-0 p-2 bg-bg-secondary rounded-lg text-sm" placeholder="用量" value={ing.amount} onChange={(e) => {
-                                const newIngs = [...ingredients];
-                                newIngs[idx].amount = e.target.value;
-                                setIngredients(newIngs);
-                            }} />
+                        <div key={idx} className="flex gap-2 mb-3 last:mb-0">
+                            <input
+                                className="flex-[2] min-w-0 p-2 bg-bg-secondary rounded-lg text-sm"
+                                placeholder="食材名"
+                                value={ing.name}
+                                onChange={(e) => {
+                                    const newIngs = [...ingredients];
+                                    newIngs[idx].name = e.target.value;
+                                    setIngredients(newIngs);
+                                }}
+                            />
+                            <div className="flex-1 flex gap-1 min-w-0">
+                                {ing.unit !== "适量" && ing.unit !== "少许" && (
+                                    <input
+                                        type="number"
+                                        className="w-full min-w-0 p-2 bg-bg-secondary rounded-lg text-sm text-center"
+                                        placeholder="数量"
+                                        value={ing.value}
+                                        onChange={(e) => {
+                                            const newIngs = [...ingredients];
+                                            newIngs[idx].value = e.target.value;
+                                            setIngredients(newIngs);
+                                        }}
+                                    />
+                                )}
+                                <select
+                                    className="p-2 bg-bg-secondary rounded-lg text-sm font-bold min-w-[60px]"
+                                    value={ing.unit}
+                                    onChange={(e) => {
+                                        const newIngs = [...ingredients];
+                                        newIngs[idx].unit = e.target.value;
+                                        setIngredients(newIngs);
+                                    }}
+                                >
+                                    {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
+                                </select>
+                            </div>
                         </div>
                     ))}
                     <button
-                        onClick={() => setIngredients([...ingredients, { name: "", amount: "" }])}
+                        onClick={() => setIngredients([...ingredients, { name: "", value: "", unit: "g" }])}
                         className="mt-2 w-full py-2 text-primary text-sm font-bold flex items-center justify-center gap-1"
                     >
                         <Plus size={16} /> 添加食材
