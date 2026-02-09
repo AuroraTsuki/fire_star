@@ -38,6 +38,7 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
                 // Check if favorite
                 if (user) {
+                    console.log(`Checking favorite for User: ${user.id}, Recipe: ${params.id}`);
                     const { data: fav, error } = await supabase
                         .from('favorites')
                         .select('id')
@@ -47,6 +48,8 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
                     if (error) {
                         console.error("Error checking favorite status:", error);
+                    } else {
+                        console.log("Favorite Logic Result (DB):", fav);
                     }
                     setIsFavorite(!!fav);
                 }
