@@ -249,11 +249,12 @@ export default function Profile() {
                     </h3>
 
                     <div className="grid grid-cols-2 gap-3 mb-2">
-                        <Link href="/create" className="aspect-[4/3] bg-bg-secondary rounded-xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light hover:bg-orange-50 hover:border-orange-200 hover:text-orange-500 transition-colors">
-                            <span className="text-2xl mb-1">+</span>
-                            <span className="text-xs font-bold">发布新菜谱</span>
-                        </Link>
-
+                        {myRecipes.length === 0 && (
+                            <Link href="/create" className="aspect-[4/3] bg-bg-secondary rounded-xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light hover:bg-orange-50 hover:border-orange-200 hover:text-orange-500 transition-colors">
+                                <span className="text-2xl mb-1">+</span>
+                                <span className="text-xs font-bold">发布新菜谱</span>
+                            </Link>
+                        )}
                         {myRecipes.map(recipe => (
                             <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
                                 <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">

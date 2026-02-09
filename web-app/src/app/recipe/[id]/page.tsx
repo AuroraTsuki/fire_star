@@ -166,18 +166,19 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
                 <div className="mb-8">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="font-bold text-lg">食材清单</h3>
-                        <span className="text-sm text-primary font-medium">2 人份</span>
+                        <span className="text-sm text-primary font-medium">{recipe.servings || '2'} 人份</span>
                     </div>
                     <div className="bg-white rounded-2xl p-4 shadow-sm mb-4">
-                        {/* Mock Ingredients */}
-                        <div className="flex justify-between py-3 border-b border-border-light">
-                            <span>西红柿</span>
-                            <span className="font-bold">2个</span>
-                        </div>
-                        <div className="flex justify-between py-3 border-b border-border-light last:border-none">
-                            <span>鸡蛋</span>
-                            <span className="font-bold">3个</span>
-                        </div>
+                        {recipe.ingredients && recipe.ingredients.length > 0 ? (
+                            recipe.ingredients.map((ing: any, idx: number) => (
+                                <div key={ing.id || idx} className="flex justify-between py-3 border-b border-border-light last:border-none">
+                                    <span>{ing.name}</span>
+                                    <span className="font-bold">{ing.amount}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center text-text-light py-4">暂无食材信息</div>
+                        )}
                     </div>
                     <button onClick={addToShoppingList} className="w-full bg-secondary text-white py-3 rounded-xl font-bold shadow-md shadow-secondary/20 flex items-center justify-center gap-2 active:scale-[0.98]">
                         <ClipboardList size={20} />
@@ -189,17 +190,20 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
                 <div>
                     <h3 className="font-bold text-lg mb-4">烹饪步骤</h3>
                     <div className="space-y-6">
-                        {/* Mock Steps */}
-                        <div className="relative pl-8 border-l-2 border-border-light ml-3">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow-sm"></div>
-                            <h4 className="font-bold mb-2">步骤 1</h4>
-                            <p className="text-text-soft text-sm leading-relaxed">准备好所有食材，洗净备用。</p>
-                        </div>
-                        <div className="relative pl-8 border-l-2 border-border-light ml-3">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gray-300 border-4 border-white shadow-sm"></div>
-                            <h4 className="font-bold mb-2">步骤 2</h4>
-                            <p className="text-text-soft text-sm leading-relaxed">起锅烧油...</p>
-                        </div>
+                        {recipe.steps && recipe.steps.length > 0 ? (
+                            recipe.steps.map((step: any, idx: number) => (
+                                <div key={step.id || idx} className="relative pl-8 border-l-2 border-border-light ml-3">
+                                    <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full border-4 border-white shadow-sm ${idx === 0 ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                                    <h4 className="font-bold mb-2">步骤 {step.step_number || idx + 1}</h4>
+                                    <p className="text-text-soft text-sm leading-relaxed">{step.description}</p>
+                                    {step.image_url && (
+                                        <img src={step.image_url} alt={`Step ${idx + 1}`} className="mt-3 rounded-lg w-full object-cover max-h-48" />
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-text-soft text-sm">暂无步骤信息</div>
+                        )}
                     </div>
                 </div>
             </div>
