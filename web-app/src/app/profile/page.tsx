@@ -297,6 +297,7 @@ export default function Profile() {
                                                 <span>{recipe.views || 0} 阅读</span>
                                             </div>
                                         </div>
+                                    </div>
                                 </Link>
                             </motion.div>
                         ))}
@@ -347,80 +348,78 @@ export default function Profile() {
                                             </div>
                                         </div>
                                     </Link>
+                                </motion.div>
                             ))}
-                                </div>
-                            ) : (
-                            <div className="text-center py-8 text-text-light text-sm">
-                                暂无收藏
-                            </div>
-                    )}
+                        </motion.div>
+                    ) : (
+                        <div className="text-center py-8 text-text-light text-sm">
+                            暂无收藏
                         </div>
-
-                {/* Sign Out Button */}
-                    <button
-                        onClick={handleSignOut}
-                        className="w-full bg-white p-4 rounded-xl text-red-500 font-bold shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]"
-                    >
-                        <LogOut size={18} />
-                        退出登录
-                    </button>
+                    )}
                 </div>
 
+                {/* Sign Out Button */}
+                <button
+                    onClick={handleSignOut}
+                    className="w-full bg-white p-4 rounded-xl text-red-500 font-bold shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]"
+                >
+                    <LogOut size={18} />
+                    退出登录
+                </button>
+
                 {/* Edit Profile Modal */}
-                {
-                    isEditing && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsEditing(false)}></div>
-                            <div className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 animate-in fade-in zoom-in duration-200">
-                                <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 text-text-light hover:text-text-main">
-                                    <X size={20} />
-                                </button>
-                                <h3 className="text-xl font-bold text-center mb-6">编辑资料</h3>
+                {isEditing && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsEditing(false)}></div>
+                        <div className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 animate-in fade-in zoom-in duration-200">
+                            <button onClick={() => setIsEditing(false)} className="absolute top-4 right-4 text-text-light hover:text-text-main">
+                                <X size={20} />
+                            </button>
+                            <h3 className="text-xl font-bold text-center mb-6">编辑资料</h3>
 
-                                <div className="mb-6 flex justify-center">
-                                    <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                                        {profile?.avatar_url ? (
-                                            <img src={profile.avatar_url} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-4xl text-text-light">
-                                                {profile?.username?.[0]?.toUpperCase() || 'U'}
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Camera className="text-white" size={32} />
+                            <div className="mb-6 flex justify-center">
+                                <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                                    {profile?.avatar_url ? (
+                                        <img src={profile.avatar_url} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-4xl text-text-light">
+                                            {profile?.username?.[0]?.toUpperCase() || 'U'}
                                         </div>
-                                        {uploading && (
-                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                                <Loader2 className="text-white animate-spin" size={32} />
-                                            </div>
-                                        )}
+                                    )}
+                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Camera className="text-white" size={32} />
                                     </div>
+                                    {uploading && (
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                            <Loader2 className="text-white animate-spin" size={32} />
+                                        </div>
+                                    )}
                                 </div>
-
-                                <div className="mb-8">
-                                    <label className="block text-sm text-text-light mb-1">用户昵称</label>
-                                    <input
-                                        autoFocus
-                                        className="w-full p-3 bg-bg-secondary rounded-xl outline-none focus:ring-2 focus:ring-primary/50"
-                                        value={editName}
-                                        onChange={e => setEditName(e.target.value)}
-                                    />
-                                </div>
-
-                                <button
-                                    onClick={handleUpdateProfile}
-                                    disabled={uploading}
-                                    className="w-full py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
-                                >
-                                    {uploading ? <Loader2 className="animate-spin" /> : "保存修改"}
-                                </button>
                             </div>
+
+                            <div className="mb-8">
+                                <label className="block text-sm text-text-light mb-1">用户昵称</label>
+                                <input
+                                    autoFocus
+                                    className="w-full p-3 bg-bg-secondary rounded-xl outline-none focus:ring-2 focus:ring-primary/50"
+                                    value={editName}
+                                    onChange={e => setEditName(e.target.value)}
+                                />
+                            </div>
+
+                            <button
+                                onClick={handleUpdateProfile}
+                                disabled={uploading}
+                                className="w-full py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
+                            >
+                                {uploading ? <Loader2 className="animate-spin" /> : "保存修改"}
+                            </button>
                         </div>
-                    )
-                }
+                    </div>
+                )}
+            </div>
 
-                <BottomNav />
-            </div >
-            );
+            <BottomNav />
+        </div >
+    );
 }
-
