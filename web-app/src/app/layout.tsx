@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import WelcomeWrapper from "@/components/WelcomeWrapper";
 
 export const metadata: Metadata = {
     title: "Burning Star Journal",
@@ -23,7 +24,9 @@ export default function RootLayout({
         <html lang="zh">
             {/* Added select-none to prevent text selection like a native app */}
             <body className="min-h-screen bg-bg-main text-text-main pb-20 select-none touch-none-action">
-                {children}
+                <WelcomeWrapper>
+                    {children}
+                </WelcomeWrapper>
             </body>
         </html>
     );
