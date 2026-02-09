@@ -60,7 +60,7 @@ export default function RecipeDetail({ params }: RecipeDetailProps) {
 
             {/* Hero Image */}
             <div className="relative aspect-[4/3] w-full">
-                <img src={recipe.cover_image} className="w-full h-full object-cover" />
+                <img src={recipe.image_url} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-6 left-6 right-6 text-white">
                     <h1 className="text-2xl font-bold mb-2">{recipe.title}</h1>

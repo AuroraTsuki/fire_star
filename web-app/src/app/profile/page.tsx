@@ -11,18 +11,11 @@ import Link from "next/link";
 
 export default function Profile() {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
-    const [profile, setProfile] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-
-    // Edit Mode State
-    const [isEditing, setIsEditing] = useState(false);
-    const [editName, setEditName] = useState("");
-    const [uploading, setUploading] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [myRecipes, setMyRecipes] = useState<any[]>([]);
 
     useEffect(() => {
-        async function getUser() {
+        async function getData() {
+            setLoading(true);
             const { data: { user } } = await supabase.auth.getUser();
 
             if (!user) {
@@ -32,15 +25,16 @@ export default function Profile() {
 
             setUser(user);
 
-            const { data } = await supabase
+            // Fetch Profile
+            const { data: profileData } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
                 .single();
 
-            if (data) {
-                setProfile(data);
-                setEditName(data.username || "");
+            if (profileData) {
+                setProfile(profileData);
+                setEditName(profileData.username || "");
             } else {
                 const newProfile = {
                     username: user.email?.split('@')[0] || '美食家',
@@ -50,10 +44,63 @@ export default function Profile() {
                 setEditName(newProfile.username);
             }
 
+            // Fetch My Recipes
+            const { data: recipesData } = await supabase
+                .from('recipes')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false });
+
+            if (recipesData) {
+                setMyRecipes(recipesData);
+            }
+
             setLoading(false);
         }
-        getUser();
+        getData();
     }, [router]);
+
+    // ... (keep handleSignOut, handleUpdateProfile, handleAvatarUpload)
+
+    // ... (keep render)
+
+    // Replace "My Recipes Section"
+    <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <h3 className="font-bold mb-4 flex items-center gap-2">
+            <BookOpen size={18} className="text-primary" />
+            我的作品
+        </h3>
+
+        <div className="grid grid-cols-2 gap-3 mb-2">
+            <Link href="/create" className="aspect-[4/3] bg-bg-secondary rounded-xl flex flex-col items-center justify-center text-text-light border-2 border-dashed border-border-light hover:bg-orange-50 hover:border-orange-200 hover:text-orange-500 transition-colors">
+                <span className="text-2xl mb-1">+</span>
+                <span className="text-xs font-bold">发布新菜谱</span>
+            </Link>
+            {myRecipes.map(recipe => (
+                <Link href={`/recipe/${recipe.id}`} key={recipe.id} className="block group">
+                    <div className="bg-white rounded-xl overflow-hidden border border-border-light shadow-sm hover:shadow-md transition-all">
+                        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                            <img
+                                src={recipe.image_url || '/placeholder-recipe.jpg'} // Fallback image
+                                alt={recipe.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=300';
+                                }}
+                            />
+                        </div>
+                        <div className="p-2">
+                            <h4 className="font-bold text-sm truncate">{recipe.title}</h4>
+                            <div className="flex justify-between items-center text-xs text-text-light mt-1">
+                                <span>{recipe.cooking_time || '15m'}</span>
+                                <span>{recipe.views || 0} 阅读</span>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    </div>
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();

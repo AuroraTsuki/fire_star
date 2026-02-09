@@ -10,8 +10,8 @@ import Link from "next/link";
 interface Recipe {
     id: string;
     title: string;
-    cover_image: string;
-    time: string;
+    image_url: string;
+    cooking_time: string;
     difficulty: string;
     author: {
         username: string;
@@ -86,8 +86,8 @@ export default function Home() {
                             key={cat}
                             onClick={() => setCategory(cat)}
                             className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${category === cat
-                                    ? "bg-primary text-white shadow-md shadow-primary/30"
-                                    : "bg-white text-text-soft hover:bg-white/80"
+                                ? "bg-primary text-white shadow-md shadow-primary/30"
+                                : "bg-white text-text-soft hover:bg-white/80"
                                 }`}
                         >
                             {cat}
@@ -108,7 +108,7 @@ export default function Home() {
                             <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
                                 <div className="relative aspect-[4/3] overflow-hidden">
                                     <img
-                                        src={recipe.cover_image || 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVzc2VydHxlbnwwfHwwfHx8MA%3D%3D'}
+                                        src={recipe.image_url || 'https://images.unsplash.com/photo-1495521821378-860fa017191d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVzc2VydHxlbnwwfHwwfHx8MA%3D%3D'}
                                         alt={recipe.title}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
@@ -122,7 +122,7 @@ export default function Home() {
                                     <div className="flex justify-between items-center text-xs text-text-light">
                                         <div className="flex items-center gap-1">
                                             <Clock size={12} />
-                                            <span>{recipe.time || '15m'}</span>
+                                            <span>{recipe.cooking_time || '15m'}</span>
                                         </div>
                                         <span className={`${recipe.difficulty === 'Easy' ? 'text-success' : 'text-primary'}`}>
                                             {recipe.difficulty || '初级'}
