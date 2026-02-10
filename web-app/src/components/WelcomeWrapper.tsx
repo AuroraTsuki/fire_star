@@ -37,7 +37,7 @@ export default function WelcomeWrapper({ children }: { children: React.ReactNode
             </AnimatePresence>
 
             <div
-                className={`transition-opacity duration-500 delay-200 ${(!isMounted || showWelcome) ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'
+                className={`transition-opacity duration-500 delay-200 ${(!isMounted || showWelcome) ? 'opacity-0 pointer-events-none' : 'opacity-100'
                     }`}
             >
                 {children}

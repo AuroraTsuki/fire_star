@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
         description: '您的专业烹饪助手',
         start_url: '/',
         display: 'standalone',
-        background_color: '#f8f7f6',
-        theme_color: '#ee8c2b',
+        background_color: '#fef2f2',
+        theme_color: '#fda4af',
         icons: [
             {
                 src: '/favicon.ico',

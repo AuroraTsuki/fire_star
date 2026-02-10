@@ -6,6 +6,12 @@ export const metadata: Metadata = {
     title: "Burning Star Journal",
     description: "Your personal food journal and recipe manager",
     manifest: "/manifest.webmanifest",
+    themeColor: "#fda4af",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "燃星日志",
+    },
 };
 
 export const viewport: Viewport = {
