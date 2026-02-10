@@ -12,19 +12,15 @@ export default function WelcomeWrapper({ children }: { children: React.ReactNode
     // Better strategy: start true, but only if we know we are on client?
     // standard next.js way: use a loading state or just useEffect.
     const [showWelcome, setShowWelcome] = useState(true);
-    const [isClient, setIsClient] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        setIsClient(true);
-        // Always show welcome page on every visit
+        setIsMounted(true);
     }, []);
 
     const handleEnterApp = () => {
         setShowWelcome(false);
-        // Removed localStorage persistence - show welcome every time
     };
-
-    if (!isClient) return null; // Prevent hydration mismatch
 
     return (
         <>
@@ -33,26 +29,19 @@ export default function WelcomeWrapper({ children }: { children: React.ReactNode
                     <motion.div
                         key="welcome"
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-white" // ensure it covers everything
+                        className="fixed inset-0 z-[100] bg-white"
                     >
                         <WelcomePage onEnter={handleEnterApp} />
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* 
-               We render children always, but maybe hide them visually 
-               or just let the welcome page cover them.
-               If we conditionally render children, we might lose state or cause re-mounts.
-               Covering is better for "app feeling".
-            */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showWelcome ? 0 : 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+            <div
+                className={`transition-opacity duration-500 delay-200 ${(!isMounted || showWelcome) ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'
+                    }`}
             >
                 {children}
-            </motion.div>
+            </div>
         </>
     );
 }

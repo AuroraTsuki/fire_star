@@ -7,13 +7,7 @@ type Props = {
 };
 
 export default function WelcomePage({ onEnter }: Props) {
-    const [showContent, setShowContent] = useState(false);
-
-    useEffect(() => {
-        // 延迟显示内容，营造渐进式效果
-        const timer = setTimeout(() => setShowContent(true), 300);
-        return () => clearTimeout(timer);
-    }, []);
+    const [showContent, setShowContent] = useState(true);
 
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">
